@@ -1,5 +1,7 @@
 # FreerJavaTemp
 
+This is where all of our work will end up eventually! I left the template README below if you want to go through it as well.
+
 A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
 
 This project was generated with a template including simple application launchers and an `ApplicationAdapter` extension that draws libGDX logo.
