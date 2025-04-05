@@ -12,10 +12,13 @@ public class Player {
 
     private static final float GRAVITY = -0.5f;
     private static final float MOVE_SPEED = 5f;
+    private static final float JUMP_FORCE = 12f;
 
     public Player(float x, float y) {
         bounds = new Rectangle(x, y, 32, 32);
+
         velocity = new Vector2(0, 0);
+
         onGround = false;
     }
 
