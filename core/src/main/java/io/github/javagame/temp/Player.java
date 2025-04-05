@@ -12,7 +12,6 @@ public class Player {
 
     private static final float GRAVITY = -0.5f;
     private static final float MOVE_SPEED = 5f;
-    private static final float JUMP_FORCE = 12f;
 
     public Player(float x, float y) {
         bounds = new Rectangle(x, y, 32, 32);
@@ -20,13 +19,12 @@ public class Player {
         onGround = false;
     }
 
-    public void update() {
+    public void update(float delta) {
         // Apply gravity
         if (!onGround) {
             velocity.y += GRAVITY;
         }
 
-        // Handle movement input
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             bounds.x -= MOVE_SPEED;
         }

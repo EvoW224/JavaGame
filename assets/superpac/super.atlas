@@ -1,0 +1,13 @@
+
+super.png
+size: 2048, 2048
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+super
+  rotate: false
+  xy: 2, 2
+  size: 1740, 1318
+  orig: 1740, 1318
+  offset: 0, 0
+  index: -1
