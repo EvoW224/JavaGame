@@ -2,6 +2,7 @@ package io.github.javagame.temp;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -31,21 +32,21 @@ public class MainMenu extends Menu {
         rootTable.clear();
 
         // Load the texture atlas from your packed folder.
-        // Make sure the path is relative to your assets folder without a leading slash.
+        // Use a path relative to the assets folder (no leading slash).
         bgAtlas = new TextureAtlas(Gdx.files.internal("packedBG/mainBG.atlas"));
-       // ignore this. bgAtlas = new TextureAtlas(Gdx.files.internal("superpac/super.atlas"));        // Create an array of frames. Adjust the region names to match your atlas.
+
+        // Build an array of frames using the region names exactly as in your atlas.
         Array<AtlasRegion> frames = new Array<>();
-        // this too. frames.add(bgAtlas.findRegion("super"));
-
         frames.add(bgAtlas.findRegion("bgMain0_delay-0.17s"));
-        frames.add(bgAtlas.findRegion("bgMain1_delay-0.17s"));
-        frames.add(bgAtlas.findRegion("bgMain2_delay-0.17s"));
-        frames.add(bgAtlas.findRegion("bgMain3_delay-0.17s"));
-        frames.add(bgAtlas.findRegion("bgMain4_delay-0.17s"));
-        frames.add(bgAtlas.findRegion("bgMain5_delay-0.17s"));
+        frames.add(bgAtlas.findRegion("bgMain6_delay-0.17s"));
+        // If you have more unique frames, add them in the order you desire.
+        // For example:
+        // frames.add(bgAtlas.findRegion("bgMain1_delay-0.17s"));
+        // frames.add(bgAtlas.findRegion("bgMain2_delay-0.17s"));
+        // ... etc.
 
-        // Create a looping animation with a frame duration of 0.5 seconds.
-        bgAnimation = new Animation<>(0.15f, frames, Animation.PlayMode.LOOP);
+        // Create a looping animation with a frame duration (adjust as desired).
+        bgAnimation = new Animation<>(0.1f, frames, Animation.PlayMode.LOOP);
         bgStateTime = 0f;
 
         // Create and style the title label.
@@ -64,8 +65,8 @@ public class MainMenu extends Menu {
         startGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                // TransitionScreen will fade for 1 second then switch to GameWorld.
-                game.setScreen(new TransitionScreen(game, new GameWorld(game, batch), 1f, batch));
+                // TransitionScreen will fade for 1 second then switch to WorldLogic.
+                game.setScreen(new TransitionScreen(game, (Screen) new GameWorld(game, batch), 1f, batch));
             }
         });
 
@@ -105,7 +106,7 @@ public class MainMenu extends Menu {
         batch.draw(currentFrame, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();
 
-        // Now draw the UI on top.
+        // Draw the UI on top.
         stage.act(delta);
         stage.draw();
     }

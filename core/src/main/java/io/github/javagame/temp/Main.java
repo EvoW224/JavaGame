@@ -11,7 +11,7 @@ public class Main extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        // Set the initial screen to MainMenu, passing the shared SpriteBatch.
+        // Set the initial screen to MainMenu.
         setScreen(new MainMenu(this, batch));
     }
 
