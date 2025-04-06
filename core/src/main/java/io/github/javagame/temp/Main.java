@@ -15,6 +15,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.Input.Keys;
 
+import java.util.ArrayList;
+
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
@@ -26,7 +28,7 @@ public class Main extends ApplicationAdapter {
     //Sprite testSprite;
     SpriteBatch spriteBatch;
     float deltaTimes;
-    Array<Projectiles> projectiles;
+    ArrayList<Projectiles> projectiles;
 
 
 
@@ -61,7 +63,7 @@ public class Main extends ApplicationAdapter {
         Player = new PC(World.viewportWorld, 18.0f, 2f, 3f, 1,1,100, 15, TextureFilePC);
         Goombabot = new Enemy(World.viewportWorld, 4.0f, 2f, 2f, 15, 1, 30, 25, TextureFileGB);
 
-        projectiles = new Array<>();
+        projectiles = new ArrayList<>();
 
         // Debug sprite creation
         System.out.println("Enemy sprite created: " + (Goombabot.CharacterSprite != null));
@@ -84,7 +86,7 @@ public class Main extends ApplicationAdapter {
     @Override
     public void render() {
         deltaTimes = Gdx.graphics.getDeltaTime();;
-        System.out.println(deltaTimes);
+       // System.out.println(deltaTimes);
         input();
         logic();
         draw();
@@ -95,16 +97,18 @@ public class Main extends ApplicationAdapter {
         World.viewportWorld.getCamera().update();
         Player.update(deltaTimes, projectiles);
         Goombabot.update(deltaTimes,15f,25f, Player);  // Update enemy with player reference
+        for (int i = projectiles.size() - 1; i >= 0; i--) {
+            projectiles.get(i).update(deltaTimes);
+        }
     }
 
     private void logic() {
-       /* for (int i = projectiles.size - 1; i >= 0; i--) {
-            if (projectiles.at(i).shouldRemove) {projectiles.removeIndex(i)};
-            else if (bucketRectangle.overlaps(dropRectangle)) {
-                dropSprites.removeIndex(i);
-                dropSound.play();
-            }
-        }*/
+        for (int i = projectiles.size() - 1; i >= 0; i--) {
+            if (projectiles.get(i).shouldRemove) {projectiles.remove(i);}
+            /*else if () {
+                projectiles.remove(i);
+            }*/
+        }
     }
 
     private void draw() {
@@ -125,6 +129,7 @@ public class Main extends ApplicationAdapter {
         //Bullet Rendering
         for (Projectiles shot : projectiles) {
             shot.CharacterSprite.draw(spriteBatch);
+            System.out.println("X: " + shot.getXPosition() + " Y: " + shot.getYPosition());
         }
         // Draw HP bar last
 
@@ -141,40 +146,3 @@ public class Main extends ApplicationAdapter {
 
 }
 
-
-/*
-
-spriteBatch = new SpriteBatch();
-backgroundTexture = new Texture("FUFqBsNWIAAZ__d.png");
-viewportWorld = new FitViewport(8, 5);
-platformHolder = new Texture("platform.png");
-Platform = new Sprite(platformHolder);
-PChitbox = new Rectangle();
-Platformhitbox = new Rectangle();
-platformGenerator();
-
-viewportWorld.update(width, height, true); // true centers the camera
-
-
-
-ScreenUtils.clear(Color.BLACK);
-        viewportWorld.apply();
-        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
-    spriteBatch.begin();
-
-float worldHeight = viewport.getWorldHeight();
-float worldWidth = viewport.getWorldWidth();
-
-       spriteBatch.draw(backgroundTexture,0,0,worldWidth,worldHeight);
-        spriteBatch.draw(image, 4, 3, 1, 1);
-        Platform.draw(spriteBatch);
-        PCharacter.draw(spriteBatch);
-
-        spriteBatch.end();
-
-        image.dispose();
-        spriteBatch.dispose();
-        backgroundTexture.dispose();
-        PCholder.dispose();
-
-        */

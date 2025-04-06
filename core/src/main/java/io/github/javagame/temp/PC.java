@@ -9,6 +9,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.ArrayList;
+
 public class PC extends Character {
 
     ShapeRenderer HPBar = new ShapeRenderer();
@@ -23,13 +25,13 @@ public class PC extends Character {
         super(viewport, maxSpeed, width, height, xspawn, yspawn, HP, damageStat, CTexture);
     }
 
-    public void update(float deltaTime, Array<Projectiles> projectiles) {
+    public void update(float deltaTime, ArrayList<Projectiles> projectiles) {
             //Character Clamp to avoid leaving screen
             CharacterSprite.setX(MathUtils.clamp(CharacterSprite.getX(), 0, viewport.getWorldWidth() - CharacterSprite.getWidth()));
             CharacterSprite.setY(MathUtils.clamp(CharacterSprite.getY(), 0, viewport.getWorldHeight() - CharacterSprite.getHeight()));
         if (!takingRecoil) {
-
-            if (Gdx.input.isKeyJustPressed(Input.Buttons.LEFT)) {
+            //Blaster Attack
+            if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
                 float px = this.CharacterSprite.getX() + this.CharacterSprite.getWidth();
                 float py = this.CharacterSprite.getY() + this.CharacterSprite.getHeight() / 2f;
 
