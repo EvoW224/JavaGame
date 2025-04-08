@@ -17,6 +17,8 @@ public class PC extends Character {
     boolean takingRecoil = false;
     float recoilTimer = 0;
     Texture projectileTexture = new Texture ("libgdx.png");
+    float gunTimer = 0.4f;
+    boolean facingRight = true;
 
 
 
@@ -31,17 +33,24 @@ public class PC extends Character {
             CharacterSprite.setY(MathUtils.clamp(CharacterSprite.getY(), 0, viewport.getWorldHeight() - CharacterSprite.getHeight()));
         if (!takingRecoil) {
             //Blaster Attack
-            if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-                float px = this.CharacterSprite.getX() + this.CharacterSprite.getWidth();
+            if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && gunTimer < 0.0f) {
+                float px = (facingRight) ? this.CharacterSprite.getX() + this.CharacterSprite.getWidth() : this.CharacterSprite.getX();
                 float py = this.CharacterSprite.getY() + this.CharacterSprite.getHeight() / 2f;
 
-                projectiles.add(new Projectiles(this.viewport, projectileTexture, px, py, this.viewport.getWorldWidth()));
+                projectiles.add(new Projectiles(this.viewport, projectileTexture, px, py, this.viewport.getWorldWidth(),this));
+                gunTimer = 0.4f;
             }
+            gunTimer -= deltaTime;
+
+            if (gunTimer < -1000000f) {gunTimer = -1f;}
+
             // Handle horizontal movement
             if (Gdx.input.isKeyPressed(Input.Keys.D)) {
                 this.speed += dvdt;
+                facingRight = true;
             } else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
                 this.speed -= dvdt;
+                facingRight = false;
             } else {
                 // Deceleration when no movement keys are pressed
                 if (speed > 0f) {
@@ -149,7 +158,7 @@ public class PC extends Character {
             CharacterHitbox.x = CharacterSprite.getX();
             CharacterHitbox.y = CharacterSprite.getY();
 
-            System.out.println(takingRecoil + " " + recoilTimer);
+           // System.out.println(takingRecoil + " " + recoilTimer);
 
     }
     public void renderHPBar() {

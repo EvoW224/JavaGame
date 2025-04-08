@@ -61,9 +61,10 @@ public class Main extends ApplicationAdapter {
         System.out.println("Viewport dimensions: " + World.viewportWorld.getWorldWidth() + "x" + World.viewportWorld.getWorldHeight());
 
         Player = new PC(World.viewportWorld, 18.0f, 2f, 3f, 1,1,100, 15, TextureFilePC);
-        Goombabot = new Enemy(World.viewportWorld, 4.0f, 2f, 2f, 15, 1, 30, 25, TextureFileGB);
-
         projectiles = new ArrayList<>();
+        Goombabot = new Enemy(World.viewportWorld, 4.0f, 2f, 2f, 15, 1, 30, 25, TextureFileGB, projectiles);
+
+
 
         // Debug sprite creation
         System.out.println("Enemy sprite created: " + (Goombabot.CharacterSprite != null));
@@ -99,15 +100,14 @@ public class Main extends ApplicationAdapter {
         Goombabot.update(deltaTimes,15f,25f, Player);  // Update enemy with player reference
         for (int i = projectiles.size() - 1; i >= 0; i--) {
             projectiles.get(i).update(deltaTimes);
+            System.out.println(projectiles.get(i).shouldRemove);
         }
+
     }
 
     private void logic() {
         for (int i = projectiles.size() - 1; i >= 0; i--) {
             if (projectiles.get(i).shouldRemove) {projectiles.remove(i);}
-            /*else if () {
-                projectiles.remove(i);
-            }*/
         }
     }
 
@@ -129,7 +129,7 @@ public class Main extends ApplicationAdapter {
         //Bullet Rendering
         for (Projectiles shot : projectiles) {
             shot.CharacterSprite.draw(spriteBatch);
-            System.out.println("X: " + shot.getXPosition() + " Y: " + shot.getYPosition());
+            //System.out.println("X: " + shot.getXPosition() + " Y: " + shot.getYPosition());
         }
         // Draw HP bar last
 

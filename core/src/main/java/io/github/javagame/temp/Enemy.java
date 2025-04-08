@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.ArrayList;
+
 public class Enemy extends Character {
     private float patrolSpeed;
     private float patrolDistance;
@@ -15,8 +17,10 @@ public class Enemy extends Character {
     private float attackCooldown;
     private float currentCooldown;
     boolean goingRight = false;
+    ArrayList<Projectiles> gunShot;
 
-    public Enemy(Viewport viewport, float maxSpeed, float width, float height, float xspawn, float yspawn, int HP, int damageStat, Texture textureFile) {
+
+    public Enemy(Viewport viewport, float maxSpeed, float width, float height, float xspawn, float yspawn, int HP, int damageStat, Texture textureFile, ArrayList<Projectiles> bulletArray) {
         super(viewport, maxSpeed, width, height, xspawn, yspawn, HP, damageStat, textureFile);
         System.out.println("Enemy constructor called");
         System.out.println("Texture file: " + (textureFile != null));
@@ -31,7 +35,7 @@ public class Enemy extends Character {
         this.attackRange = 2f;  // Range at which enemy can attack
         this.attackCooldown = 3f;  // Time between attacks
         this.currentCooldown = 0f;
-
+        this.gunShot = bulletArray;
 
         // Set initial sprite position
         /*if (CharacterSprite != null) {
@@ -41,6 +45,8 @@ public class Enemy extends Character {
     }
 
     public void update(float deltaTime, float leftbound, float rightbound,PC Target) {
+
+
 
         CharacterSprite.setX(MathUtils.clamp(CharacterSprite.getX(), 0, viewport.getWorldWidth() - CharacterSprite.getWidth()));
         CharacterSprite.setY(MathUtils.clamp(CharacterSprite.getY(), 0, viewport.getWorldHeight() - CharacterSprite.getHeight()));
@@ -65,11 +71,22 @@ public class Enemy extends Character {
             } else {
                 this.CharacterSprite.translateX(-patrolSpeed * deltaTime);
             }
+
+
+        }
+
+       this.CharacterHitbox.x = CharacterSprite.getX();
+        this.CharacterHitbox.y = CharacterSprite.getY();
+
+        for (int i = gunShot.size() - 1; i >= 0; i--) {
+            if (gunShot.get(i).entityOverlap(this.CharacterHitbox)){
+                gunShot.get(i).shouldRemove = true;
+                this.HitPoints -= 5;
+            }
         }
 
         // Update hitbox position
-        CharacterHitbox.x = CharacterSprite.getX();
-        CharacterHitbox.y = CharacterSprite.getY();
+
 
         //this.position.set(CharacterSprite.getX(), CharacterSprite.getY());
 
