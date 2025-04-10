@@ -22,16 +22,18 @@ public class Projectiles extends Character {
     }
 
     public void update(float deltaTime) {
-        this.CharacterSprite.translateX(speed * deltaTime* direction);
 
-        // Update hitbox and position
-        CharacterHitbox.x = CharacterSprite.getX();
-        CharacterHitbox.y = CharacterSprite.getY();
+            this.CharacterSprite.translateX(speed * deltaTime * direction);
 
-        // Mark for removal if traveled far enough
-        if (this.getXPosition() - this.xspawn >= maxDistance) {
-            shouldRemove = true;
-        }
+            // Update hitbox and position
+            CharacterHitbox.x = this.CharacterSprite.getX();
+            CharacterHitbox.y = this.CharacterSprite.getY();
+
+            // Mark for removal if traveled far enough
+            if (Math.abs(this.CharacterSprite.getX() - this.xspawn )>= maxDistance) {
+                shouldRemove = true;
+            }
+
     }
 
     public void draw(SpriteBatch batch) {
