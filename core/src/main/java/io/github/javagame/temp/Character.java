@@ -95,8 +95,8 @@ public class Character {
         return (this.CharacterHitbox.overlaps(otherEntityHitbox));
     }
 
-    public boolean isAlive() {
-        return (HitPoints > 0);
+    public boolean isDead() {
+        return (HitPoints < 0);
     }
 
     /*public void drawCharacter(float worldWidth, float worldHeight) {

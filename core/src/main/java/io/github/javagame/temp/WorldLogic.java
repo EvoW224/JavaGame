@@ -86,8 +86,8 @@ public class WorldLogic extends ScreenAdapter {
         viewportWorld.getCamera().update();
 
         // Update game entities.
-        player.update(delta, projectiles);
-        enemy.update(delta, 15f, 25f, player);
+        if (player != null) { player.update(delta, projectiles); }
+        if (enemy != null) {enemy.update(delta, 15f, 25f, player); }
 
         // Update projectiles.
         for (int i = projectiles.size() - 1; i >= 0; i--) {
@@ -101,13 +101,21 @@ public class WorldLogic extends ScreenAdapter {
         }
     }
 
-    @Override
+   // @Override
     public void render(float delta) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.setScreen(new io.github.javagame.temp.ui.PauseMenu(game, this));
             System.out.println("Pause input detected.");
             return;
         }
+
+        for (int i = projectiles.size() - 1; i >= 0; i--) {
+            if (projectiles.get(i).shouldRemove) {projectiles.remove(i);}
+        }
+        if (player != null) { if (player.isDead()) { player  = null;} }
+        if (enemy != null) { if (enemy.isDead()) { enemy = null; } }
+        /*if (Apache != null) { if (Apache.isDead()) { Apache = null; } }
+        if (Handy != null) {if (Handy.isDead()) { Handy = null; }}*/
 
         update(delta);
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
@@ -119,8 +127,8 @@ public class WorldLogic extends ScreenAdapter {
 
         spriteBatch.begin();
         floorLayer.render(spriteBatch, viewportWorld);
-        player.CharacterSprite.draw(spriteBatch);
-        enemy.CharacterSprite.draw(spriteBatch);
+        if (player != null) {player.CharacterSprite.draw(spriteBatch);}
+        if (enemy != null) {enemy.CharacterSprite.draw(spriteBatch);}
         for (Projectiles shot : projectiles) {
             shot.CharacterSprite.draw(spriteBatch);
         }
