@@ -23,6 +23,8 @@ public class Main extends ApplicationAdapter {
     WorldLogic World;
     PC Player;
     Enemy Goombabot;
+    Rotor Apache;
+    Grapple Handy;
     Texture TextureFilePC;
     Texture TextureFileGB;
     //Sprite testSprite;
@@ -62,8 +64,9 @@ public class Main extends ApplicationAdapter {
 
         Player = new PC(World.viewportWorld, 18.0f, 2f, 3f, 1,1,100, 15, TextureFilePC);
         projectiles = new ArrayList<>();
-        Goombabot = new Enemy(World.viewportWorld, 4.0f, 2f, 2f, 15, 1, 30, 25, TextureFileGB, projectiles);
-
+        Goombabot = new Enemy(World.viewportWorld, 3.0f, 2f, 2f, 15, 13, 30, 25, TextureFileGB, projectiles);
+        Apache = new Rotor(World.viewportWorld, 4.0f, 2f, 2f, 15, 15, 30, 25, TextureFileGB, projectiles);
+        Handy = new Grapple(World.viewportWorld, 4.0f, 2f, 2f, 25, 1, 30, 25, TextureFileGB, projectiles);
 
 
         // Debug sprite creation
@@ -96,8 +99,10 @@ public class Main extends ApplicationAdapter {
 
     private void input() {
         World.viewportWorld.getCamera().update();
-        Player.update(deltaTimes, projectiles);
-        Goombabot.update(deltaTimes,15f,25f, Player);  // Update enemy with player reference
+        if (Player != null) {Player.update(deltaTimes, projectiles);}
+        if (Goombabot != null) { Goombabot.update(deltaTimes,15f,25f, Player);  }// Update enemy with player reference
+        if (Apache != null) { Apache.update(deltaTimes,15f,25f, Player);  }
+        if (Handy != null) {Handy.update(deltaTimes,15f,25f, Player);}
         for (int i = projectiles.size() - 1; i >= 0; i--) {
             projectiles.get(i).update(deltaTimes);
             System.out.println(projectiles.get(i).shouldRemove);
@@ -109,6 +114,10 @@ public class Main extends ApplicationAdapter {
         for (int i = projectiles.size() - 1; i >= 0; i--) {
             if (projectiles.get(i).shouldRemove) {projectiles.remove(i);}
         }
+        if (Player != null) { if (Player.isDead()) { Player  = null;} }
+        if (Goombabot != null) { if (Goombabot.isDead()) { Goombabot = null; } }
+        if (Apache != null) { if (Apache.isDead()) { Apache = null; } }
+        if (Handy != null) {if (Handy.isDead()) { Handy = null; }}
     }
 
     private void draw() {
@@ -119,12 +128,26 @@ public class Main extends ApplicationAdapter {
         spriteBatch.begin();
 
         // Draw player first
-        Player.CharacterSprite.draw(spriteBatch);
-       // System.out.println("Drawing player at: " + Player.CharacterSprite.getX() + ", " + Player.CharacterSprite.getY());
-
+        if (Player != null) {
+            Player.CharacterSprite.draw(spriteBatch);
+            // System.out.println("Drawing player at: " + Player.CharacterSprite.getX() + ", " + Player.CharacterSprite.getY());
+        }
         // Draw enemy second
-        Goombabot.CharacterSprite.draw(spriteBatch);
-       // System.out.println("Drawing enemy at: " + Goombabot.CharacterSprite.getX() + ", " + Goombabot.CharacterSprite.getY());
+        if (Goombabot != null) {
+            Goombabot.CharacterSprite.draw(spriteBatch);
+            // System.out.println("Drawing enemy at: " + Goombabot.CharacterSprite.getX() + ", " + Goombabot.CharacterSprite.getY());
+        }
+
+        if (Apache != null) {
+            Apache.CharacterSprite.draw(spriteBatch);
+            // System.out.println("Drawing enemy at: " + Goombabot.CharacterSprite.getX() + ", " + Goombabot.CharacterSprite.getY());
+        }
+
+        if (Handy != null) {
+            Handy.CharacterSprite.draw(spriteBatch);
+            // System.out.println("Drawing enemy at: " + Goombabot.CharacterSprite.getX() + ", " + Goombabot.CharacterSprite.getY());
+        }
+
 
         //Bullet Rendering
         for (Projectiles shot : projectiles) {
@@ -140,7 +163,7 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void dispose() {
-       /*Player.disposeCharacter();*/
+
     }
 
 

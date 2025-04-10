@@ -48,32 +48,55 @@ public class Enemy extends Character {
 
 
 
-        CharacterSprite.setX(MathUtils.clamp(CharacterSprite.getX(), 0, viewport.getWorldWidth() - CharacterSprite.getWidth()));
-        CharacterSprite.setY(MathUtils.clamp(CharacterSprite.getY(), 0, viewport.getWorldHeight() - CharacterSprite.getHeight()));
+        this.CharacterSprite.setX(MathUtils.clamp(this.CharacterSprite.getX(), 0, viewport.getWorldWidth() - this.CharacterSprite.getWidth()));
+        this.CharacterSprite.setY(MathUtils.clamp(this.CharacterSprite.getY(), 0, viewport.getWorldHeight() - this.CharacterSprite.getHeight()));
         if (currentCooldown > 0) {
             currentCooldown -= deltaTime;
         }
 
-        if ((Math.abs(Target.CharacterSprite.getX() - this.CharacterSprite.getX()) < detectionRange) && (Target.CharacterSprite.getY() - this.CharacterSprite.getY() < 1f) ) {
-            if (Target.CharacterSprite.getX() > this.CharacterSprite.getX()) {this.CharacterSprite.translateX(maxSpeed * deltaTime);}
-            else {this.CharacterSprite.translateX(-maxSpeed * deltaTime);}
-            this.attack(Target);
-        }
-        else {
-            if (this.CharacterSprite.getX() > rightbound) {
-                goingRight = false;
-            }
-            if (this.CharacterSprite.getX() < leftbound) {
-                goingRight = true;
-            }
-            if (goingRight) {
-                this.CharacterSprite.translateX(patrolSpeed * deltaTime);
-            } else {
-                this.CharacterSprite.translateX(-patrolSpeed * deltaTime);
-            }
+          if (Target != null) {
+              if ((Math.abs(Target.CharacterSprite.getX() - this.CharacterSprite.getX()) < detectionRange) && (Math.abs(Target.CharacterSprite.getY() - this.CharacterSprite.getY()) < 1f)) {
+                  if (Target.CharacterSprite.getX() > this.CharacterSprite.getX()) {
+                      this.CharacterSprite.translateX(maxSpeed * deltaTime);
+                  } else {
+                      this.CharacterSprite.translateX(-maxSpeed * deltaTime);
+                  }
+                  this.attack(Target);
+              } else {
+                  if (this.CharacterSprite.getX() > rightbound) {
+                      goingRight = false;
+                  }
+                  if (this.CharacterSprite.getX() < leftbound) {
+                      goingRight = true;
+                  }
+                  if (goingRight) {
+                      this.CharacterSprite.translateX(patrolSpeed * deltaTime);
+                  } else {
+                      this.CharacterSprite.translateX(-patrolSpeed * deltaTime);
+                  }
 
 
-        }
+              }
+                if (CharacterSprite.getY() > 1f) {onAir = true;}
+              if (Math.abs(this.yspeed) > this.terminalVelocity) {
+                  this.yspeed = this.terminalVelocity * Math.signum(this.yspeed);
+              }
+
+              // Ground collision check - moved before jump check
+              if (CharacterSprite.getY() <= 1f) {
+                  CharacterSprite.setY(1f);
+                  this.yspeed = 0f;
+                  this.onAir = false;
+                  this.onGround = true;
+                  this.jumpTimer = 0f;
+              }
+              if (onAir) {
+                  this.yspeed -= this.gravity;
+              }
+              CharacterSprite.translateY(yspeed * deltaTime);
+
+          }
+
 
        this.CharacterHitbox.x = CharacterSprite.getX();
         this.CharacterHitbox.y = CharacterSprite.getY();
@@ -81,7 +104,8 @@ public class Enemy extends Character {
         for (int i = gunShot.size() - 1; i >= 0; i--) {
             if (gunShot.get(i).entityOverlap(this.CharacterHitbox)){
                 gunShot.get(i).shouldRemove = true;
-                this.HitPoints -= 5;
+                this.HitPoints -= 10;
+                System.out.println(this.HitPoints);
             }
         }
 
@@ -96,15 +120,20 @@ public class Enemy extends Character {
 
 
     public void attack(PC player) {
-        System.out.printf("Current Cooldown: %f\n", currentCooldown);
-        if (currentCooldown <= 0) {
-            float distanceToPlayer = Math.abs(player.CharacterSprite.getX() - this.CharacterSprite.getX());
-            if (distanceToPlayer <= attackRange) {
-                player.takeDamage(DamageStat);
-                currentCooldown += attackCooldown;
-                System.out.printf("Player took %d damage, %d HP left\n", DamageStat, player.HitPoints);
-                if (this.CharacterSprite.getX() > player.CharacterSprite.getX()) {player.recoil(false);}
-                else {player.recoil(true);}
+        if (player != null) {
+            System.out.printf("Current Cooldown: %f\n", currentCooldown);
+            if (currentCooldown <= 0) {
+                float distanceToPlayer = Math.abs(player.CharacterSprite.getX() - this.CharacterSprite.getX());
+                if (distanceToPlayer <= attackRange) {
+                    player.takeDamage(DamageStat);
+                    currentCooldown += attackCooldown;
+                    System.out.printf("Player took %d damage, %d HP left\n", DamageStat, player.HitPoints);
+                    if (this.CharacterSprite.getX() > player.CharacterSprite.getX()) {
+                        player.recoil(false);
+                    } else {
+                        player.recoil(true);
+                    }
+                }
             }
         }
     }

@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Projectiles extends Character {
-    private float speed = 10f;
+    private float speed = 20f;
     private float maxDistance = 15f;
     public boolean shouldRemove = false;
     float xspawn;

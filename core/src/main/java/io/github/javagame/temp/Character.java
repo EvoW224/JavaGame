@@ -33,7 +33,7 @@ public class Character {
     protected float speed = 0f;
     protected float dvdt = 0.8f;
     protected float jumpTimer = 0;
-    protected float yspeed;// Tracks how long the jump button is held
+    protected float yspeed;// Tracks vertical speed
     protected float maxJumpTime = 0f; // Maximum time jump can be held (1 second)
 
     //Local Viewport Variable
@@ -94,11 +94,14 @@ public class Character {
 
 
     public boolean entityOverlap (Rectangle otherEntityHitbox) {
-        return (this.CharacterHitbox.overlaps(otherEntityHitbox));
+        if (otherEntityHitbox != null) {
+            return (this.CharacterHitbox.overlaps(otherEntityHitbox));
+        }
+        else { return false;}
     }
 
-    public boolean isAlive() {
-        return (HitPoints > 0);
+    public boolean isDead() {
+        return (HitPoints <= 0);
     }
 
     /*public void drawCharacter(float worldWidth, float worldHeight) {

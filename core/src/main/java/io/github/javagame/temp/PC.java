@@ -120,8 +120,8 @@ public class PC extends Character {
             }
 
         // Ground collision check - moved before jump check
-        if (CharacterSprite.getY() <= 1f) {
-            CharacterSprite.setY(1f);
+        if (this.CharacterSprite.getY() <= 1f) {
+            this.CharacterSprite.setY(1f);
             this.yspeed = 0f;
             this.onAir = false;
             this.onGround = true;

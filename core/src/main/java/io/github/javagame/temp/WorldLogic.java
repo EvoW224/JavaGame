@@ -9,6 +9,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import java.util.ArrayList;
+
 public class WorldLogic {
     float gravity = 0;
     public Texture platformHolder;
@@ -16,7 +18,9 @@ public class WorldLogic {
     FitViewport viewportWorld;
     float worldWidth;
     float worldHeight;
+    int CurrentRoom;
     float deltaTime = Gdx.graphics.getDeltaTime();
+
 
 
     public void createWorld () {
@@ -36,6 +40,8 @@ public class WorldLogic {
         viewportWorld.apply();
 
     }
+
+
 }
 
 
