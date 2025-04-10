@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Projectiles extends Character {
     private float speed = 20f;
-    private float maxDistance;
+    private float maxDistance = 15f;
     public boolean shouldRemove = false;
     float xspawn;
     float yspawn;
@@ -15,7 +15,6 @@ public class Projectiles extends Character {
     public Projectiles (Viewport viewport, Texture textureFile, float spawnPositionx, float spawnPositiony, float screenWidth, PC shooter) {
         super(viewport, 0f, 5f, 5f, spawnPositionx, spawnPositiony, 1, 1, textureFile);
         this.CharacterSprite.setSize(.5f, .5f);
-        this.maxDistance = screenWidth / 2f;  // Travel half screen
         xspawn = spawnPositionx;
         yspawn = spawnPositiony;
         direction = (shooter.facingRight) ? 1 : -1;;
