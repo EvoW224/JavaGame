@@ -2,7 +2,6 @@ package io.github.javagame.temp.ui;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -25,14 +24,14 @@ public class MainMenu extends Menu {
     private Animation<AtlasRegion> bgAnimation;
     private float bgStateTime;
 
-    // Constructor accepts both a Game instance and a shared SpriteBatch.
+    // Constructor: accepts a Game instance and a shared SpriteBatch.
     public MainMenu(Game game, SpriteBatch batch) {
         super("Main Menu");
         this.game = game;
         this.batch = batch;
         rootTable.clear();
 
-        // Load the texture atlas from your assets folder.
+        // Load the texture atlas from your packed folder.
         bgAtlas = new TextureAtlas(Gdx.files.internal("packedBG/mainBG.atlas"));
 
         // Build an array of frames from the atlas.
@@ -43,13 +42,12 @@ public class MainMenu extends Menu {
         frames.add(bgAtlas.findRegion("bgMain3_delay-0.17s"));
         frames.add(bgAtlas.findRegion("bgMain4_delay-0.17s"));
         frames.add(bgAtlas.findRegion("bgMain5_delay-0.17s"));
-        // (Additional frames could be added here if available.)
 
-        // Create a looping animation with a frame duration of 0.1 seconds.
+        // Create a looping animation.
         bgAnimation = new Animation<>(0.15f, frames, Animation.PlayMode.LOOP);
         bgStateTime = 0f;
 
-        // Create and style the title label.
+        // Style the title label.
         Label titleLabel = new Label("TRASH GAME", skin);
         titleLabel.setFontScale(5f);
         titleLabel.setColor(1, 1, 1, 1);
@@ -61,22 +59,20 @@ public class MainMenu extends Menu {
         TextButton settingsButton = new TextButton("Settings", skin);
         TextButton exitGameButton = new TextButton("Exit Game", skin);
 
-        // Listener for Start Game: transition to the gameplay screen.
+        // Listener for Start Game: transition to the gameplay screen with a fade effect.
         startGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                // Replace the commented line below with your transition if desired:
-                // game.setScreen(new TransitionScreen(game, new WorldLogic(game, batch), 1f, batch));
-                // For now, directly set the gameplay screen:
-                game.setScreen(new WorldLogic(game, batch));
+                // Create a TransitionScreen that fades for 1 second then switches to the WorldLogic screen.
+                game.setScreen(new TransitionScreen(game, new WorldLogic(game, batch), 1f, batch));
             }
         });
 
-        // Listeners for Settings and Exit can be implemented similarly.
+        // Listeners for Settings and Exit (implement as needed).
         settingsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                // For now, do nothing or set a Settings screen.
+                // TODO: Set to a Settings screen.
             }
         });
         exitGameButton.addListener(new ChangeListener() {
@@ -102,8 +98,6 @@ public class MainMenu extends Menu {
         // Update the background animation.
         bgStateTime += delta;
         TextureRegion currentFrame = bgAnimation.getKeyFrame(bgStateTime, true);
-
-        // Draw the animated background (covering the entire screen).
         batch.begin();
         batch.draw(currentFrame, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();

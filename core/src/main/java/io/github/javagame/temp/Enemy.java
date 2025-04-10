@@ -167,7 +167,6 @@ public class Enemy extends Character {
             }
         }
 
-        // Update the hitbox.
         CharacterHitbox.x = CharacterSprite.getX();
         CharacterHitbox.y = CharacterSprite.getY();
 

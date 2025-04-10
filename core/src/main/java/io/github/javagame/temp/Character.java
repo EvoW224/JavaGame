@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 
-public class Character {
+public class    Character {
 
     float deltaTime = Gdx.graphics.getDeltaTime();
 
