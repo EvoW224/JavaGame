@@ -169,9 +169,10 @@ public class Enemy extends Character {
 
         CharacterHitbox.x = CharacterSprite.getX();
         CharacterHitbox.y = CharacterSprite.getY();
+        System.out.println ("Enemy X: " + this.CharacterSprite.getX() + " Enemy Y: " + this.CharacterSprite.getY() + " Enemy Hitbox X: " + this.CharacterHitbox.x + " Enemy Hiitbox Width: " + this.CharacterHitbox.width + " Enemy Width: " + this.CharacterSprite.getWidth());
 
         for (int i = gunShot.size() - 1; i >= 0; i--) {
-            if (gunShot.get(i).entityOverlap(this.CharacterHitbox)){
+           /*if (gunShot.get(i).CharacterHitbox.overlaps(this.CharacterHitbox)) {*/ if ((((gunShot.get(i).CharacterSprite.getX() < this.CharacterSprite.getX())&&(gunShot.get(i).CharacterSprite.getX()+ gunShot.get(i).CharacterSprite.getWidth() > this.CharacterSprite.getX()))||((gunShot.get(i).CharacterSprite.getX() > this.CharacterSprite.getX())&&(gunShot.get(i).CharacterSprite.getX() < this.CharacterSprite.getX() + this.CharacterSprite.getWidth()))) && ((gunShot.get(i).CharacterSprite.getY() > this.CharacterSprite.getY())&&(gunShot.get(i).CharacterSprite.getY() + gunShot.get(i).CharacterSprite.getHeight() < this.CharacterSprite.getY() + this.CharacterSprite.getHeight()))) {
                 gunShot.get(i).shouldRemove = true;
                 gunShot.get(i).HitPoints = 0;
                 this.HitPoints -= 10;
