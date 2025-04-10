@@ -27,7 +27,7 @@ public class PC extends Character {
     // Constants for the idle sprite sheet (adjust as needed).
     private static final int IDLE_FRAME_COLS = 56;
     private static final int IDLE_FRAME_ROWS = 1;
-    private boolean facingRight = true;
+    public boolean facingRight = true;
 
     // Animation fields for the jump state.
     private Animation<TextureRegion> jumpAnimation;
@@ -133,8 +133,8 @@ public class PC extends Character {
                 gunTimer = 0.4f;
             }
             gunTimer -= deltaTime;
-
             if (gunTimer < -1000000f) {gunTimer = -1f;}
+
             // Handle horizontal movement.
             if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
                 this.speed += dvdt;
