@@ -19,6 +19,7 @@ public class PC extends Character {
     boolean takingRecoil = false;
     float recoilTimer = 0;
     Texture projectileTexture = new Texture("libgdx.png");
+    float gunTimer = 0.4f;
 
     // Animation fields for the idle state.
     private Animation<TextureRegion> idleAnimation;
@@ -123,11 +124,17 @@ public class PC extends Character {
 
         if (!takingRecoil) {
             // Blaster Attack.
-            if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-                float px = this.CharacterSprite.getX() + this.CharacterSprite.getWidth();
+            //Blaster Attack
+            if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && gunTimer < 0.0f) {
+                float px = (facingRight) ? this.CharacterSprite.getX() + this.CharacterSprite.getWidth() : this.CharacterSprite.getX();
                 float py = this.CharacterSprite.getY() + this.CharacterSprite.getHeight() / 2f;
-                projectiles.add(new Projectiles(this.viewport, projectileTexture, px, py, this.viewport.getWorldWidth()));
+
+                projectiles.add(new Projectiles(this.viewport, projectileTexture, px, py, this.viewport.getWorldWidth(),this));
+                gunTimer = 0.4f;
             }
+            gunTimer -= deltaTime;
+
+            if (gunTimer < -1000000f) {gunTimer = -1f;}
             // Handle horizontal movement.
             if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
                 this.speed += dvdt;

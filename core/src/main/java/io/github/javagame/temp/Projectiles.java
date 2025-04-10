@@ -11,7 +11,7 @@ public class Projectiles extends Character {
     float xspawn;
     float yspawn;
 
-    public Projectiles (Viewport viewport, Texture textureFile, float spawnPositionx, float spawnPositiony, float screenWidth) {
+    public Projectiles (Viewport viewport, Texture textureFile, float spawnPositionx, float spawnPositiony, float screenWidth, PC Shooter) {
         super(viewport, 0f, 5f, 5f, spawnPositionx, spawnPositiony, 1, 1, textureFile);
         this.CharacterSprite.setSize(.5f, .5f);
         this.maxDistance = screenWidth / 2f;  // Travel half screen
