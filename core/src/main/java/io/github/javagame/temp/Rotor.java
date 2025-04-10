@@ -95,6 +95,7 @@ public class Rotor extends Character{
         }
 
 
+
         this.CharacterHitbox.x = CharacterSprite.getX();
         this.CharacterHitbox.y = CharacterSprite.getY();
 
