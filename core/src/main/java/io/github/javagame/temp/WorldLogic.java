@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Game;
 import io.github.javagame.temp.bg.Background;
 import io.github.javagame.temp.tile.FloorTile;
+import io.github.javagame.temp.ui.PauseMenu;
 
 public class WorldLogic extends ScreenAdapter {
     // The viewport that defines the game world.
@@ -27,11 +28,13 @@ public class WorldLogic extends ScreenAdapter {
     // Core game entities.
     public PC player;
     public Enemy enemy;
+    public Rotor rotor;  // <-- New Rotor enemy
     public ArrayList<Projectiles> projectiles;
 
     // Textures for entities.
     private Texture textureFilePC;
     private Texture textureFileGB;
+    private Texture textureFileRotor; // Texture for Rotor (dummy, as Rotor loads its own sprite sheet internally)
 
     // Shared SpriteBatch provided from Main.
     private SpriteBatch spriteBatch;
@@ -47,8 +50,8 @@ public class WorldLogic extends ScreenAdapter {
         background = new Background("watching.png");
 
         // Create the floor tile layer; for testing, we choose "tile1.png".
-        // Here, each tile is defined to be 3 units wide and 1 unit high in the world.
-        floorLayer = new FloorTile("tile1.png", 3f, 1f, .7f);
+        // Each tile will be 3 units wide and 1 unit high and drawn with an offset of 0.7f.
+        floorLayer = new FloorTile("tile1.png", 3f, 1f, 0.7f);
 
         createWorld();
         viewportWorld.apply();
@@ -66,12 +69,24 @@ public class WorldLogic extends ScreenAdapter {
         } catch (Exception e) {
             System.out.println("Error loading Enemy texture: " + e.getMessage());
         }
+        // For Rotor: although its initFlyAnimation loads "GoomBot_Flying.png",
+        // we still pass a texture to the superclass (it won’t be used).
+        try {
+            textureFileRotor = new Texture(Gdx.files.internal("GoomBot_Flying.png"));
+            System.out.println("Rotor Texture loaded successfully.");
+        } catch (Exception e) {
+            System.out.println("Error loading Rotor texture: " + e.getMessage());
+        }
 
         // Create game entities.
         player = new PC(viewportWorld, 18.0f, 4f, 6f, 1, 1, 100, 15, textureFilePC);
         projectiles = new ArrayList<>();
         enemy = new Enemy(viewportWorld, 4.0f, 4f, 6f, 15, 1, 30, 25, textureFileGB, projectiles);
 
+        // Instantiate the Rotor enemy.
+        // (Parameters: viewport, maxSpeed, width, height, xspawn, yspawn, HP, damageStat, texture, projectiles)
+        // Adjust the values as needed.
+        rotor = new Rotor(viewportWorld, 5.0f, 4f, 6f, 25, 1, 30, 20, textureFileRotor, projectiles);
     }
 
     public void createWorld() {
@@ -86,8 +101,16 @@ public class WorldLogic extends ScreenAdapter {
         viewportWorld.getCamera().update();
 
         // Update game entities.
-        if (player != null) { player.update(delta, projectiles); }
-        if (enemy != null) {enemy.update(delta, 15f, 25f, player); }
+        if (player != null) {
+            player.update(delta, projectiles);
+        }
+        if (enemy != null) {
+            enemy.update(delta, 15f, 25f, player);
+        }
+        if (rotor != null) {
+            // Here we assign patrol boundaries for Rotor (you can adjust these numbers).
+            rotor.update(delta, 25f, 35f, player);
+        }
 
         // Update projectiles.
         for (int i = projectiles.size() - 1; i >= 0; i--) {
@@ -95,28 +118,19 @@ public class WorldLogic extends ScreenAdapter {
         }
         // Remove projectiles flagged for removal.
         for (int i = projectiles.size() - 1; i >= 0; i--) {
-            if (projectiles.get(i).shouldRemove) {
+            if (projectiles.get(i).isDead()) {
                 projectiles.remove(i);
             }
         }
     }
 
-   // @Override
+    @Override
     public void render(float delta) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            game.setScreen(new io.github.javagame.temp.ui.PauseMenu(game, this));
+            game.setScreen(new PauseMenu(game, this));
             System.out.println("Pause input detected.");
             return;
         }
-
-        for (int i = projectiles.size() - 1; i >= 0; i--) {
-            if (projectiles.get(i).shouldRemove) {projectiles.remove(i);}
-        }
-        if (player != null) { if (player.isDead()) { player  = null;} }
-        if (enemy != null) { if (enemy.isDead()) { enemy = null; } }
-        /*if (Apache != null) { if (Apache.isDead()) { Apache = null; } }
-        if (Handy != null) {if (Handy.isDead()) { Handy = null; }}*/
-
         update(delta);
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         spriteBatch.setProjectionMatrix(viewportWorld.getCamera().combined);
@@ -124,11 +138,12 @@ public class WorldLogic extends ScreenAdapter {
         // Render the background.
         background.render(spriteBatch, viewportWorld);
         // Render the floor tiles.
-
         spriteBatch.begin();
         floorLayer.render(spriteBatch, viewportWorld);
-        if (player != null) {player.CharacterSprite.draw(spriteBatch);}
-        if (enemy != null) {enemy.CharacterSprite.draw(spriteBatch);}
+        // Draw the player, enemy, and rotor.
+        if (player != null) { player.CharacterSprite.draw(spriteBatch); }
+        if (enemy != null) { enemy.CharacterSprite.draw(spriteBatch); }
+        if (rotor != null) { rotor.CharacterSprite.draw(spriteBatch); }
         for (Projectiles shot : projectiles) {
             shot.CharacterSprite.draw(spriteBatch);
         }
@@ -144,7 +159,9 @@ public class WorldLogic extends ScreenAdapter {
     public void dispose() {
         if (textureFilePC != null) textureFilePC.dispose();
         if (textureFileGB != null) textureFileGB.dispose();
+        if (textureFileRotor != null) textureFileRotor.dispose();
         background.dispose();
-       // floorLayer.dispose();
+        // If your FloorTile class has a dispose method uncomment below.
+        // floorLayer.dispose();
     }
 }

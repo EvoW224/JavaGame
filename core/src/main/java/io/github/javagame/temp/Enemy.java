@@ -173,6 +173,7 @@ public class Enemy extends Character {
         for (int i = gunShot.size() - 1; i >= 0; i--) {
             if (gunShot.get(i).entityOverlap(this.CharacterHitbox)){
                 gunShot.get(i).shouldRemove = true;
+                gunShot.get(i).HitPoints = 0;
                 this.HitPoints -= 10;
                 System.out.println(this.HitPoints);
             }
@@ -181,7 +182,7 @@ public class Enemy extends Character {
 
     public void attack(PC player) {
         if (player != null) {
-            System.out.printf("Current Cooldown: %f\n", currentCooldown);
+            //System.out.printf("Current Cooldown: %f\n", currentCooldown);
             if (currentCooldown <= 0) {
                 float distanceToPlayer = Math.abs(player.CharacterSprite.getX() - this.CharacterSprite.getX());
                 if (distanceToPlayer <= attackRange) {
