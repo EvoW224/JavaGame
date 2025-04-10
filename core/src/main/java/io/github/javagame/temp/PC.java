@@ -225,7 +225,7 @@ public class PC extends Character {
         CharacterHitbox.x = CharacterSprite.getX();
         CharacterHitbox.y = CharacterSprite.getY();
 
-        System.out.println(takingRecoil + " " + recoilTimer);
+        //System.out.println(takingRecoil + " " + recoilTimer);
     }
 
 

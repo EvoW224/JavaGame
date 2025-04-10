@@ -95,7 +95,7 @@ public class WorldLogic extends ScreenAdapter {
         }
         // Remove projectiles flagged for removal.
         for (int i = projectiles.size() - 1; i >= 0; i--) {
-            if (projectiles.get(i).shouldRemove) {
+            if (projectiles.get(i).isDead()) {
                 projectiles.remove(i);
             }
         }
