@@ -69,8 +69,9 @@ public class WorldLogic extends ScreenAdapter {
 
         // Create game entities.
         player = new PC(viewportWorld, 18.0f, 4f, 6f, 1, 1, 100, 15, textureFilePC);
-        enemy = new Enemy(viewportWorld, 4.0f, 4f, 6f, 15, 1, 30, 25, textureFileGB);
         projectiles = new ArrayList<>();
+        enemy = new Enemy(viewportWorld, 4.0f, 4f, 6f, 15, 1, 30, 25, textureFileGB, projectiles);
+
     }
 
     public void createWorld() {

@@ -8,6 +8,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.ArrayList;
+
 public class Enemy extends Character {
     private float patrolSpeed;
     private float patrolDistance;
@@ -21,6 +23,7 @@ public class Enemy extends Character {
     // This flag indicates the enemy's current movement direction.
     // If true, the enemy should face right; if false, the enemy should face left.
     private boolean goingRight = true;
+    ArrayList<Projectiles> gunShot;
 
     // Animation fields for the enemy's idle state.
     private Animation<TextureRegion> idleAnimation;
@@ -30,7 +33,7 @@ public class Enemy extends Character {
     private static final int ENEMY_FRAME_COLS = 30;
     private static final int ENEMY_FRAME_ROWS = 1;
 
-    public Enemy(Viewport viewport, float maxSpeed, float width, float height, float xspawn, float yspawn, int HP, int damageStat, Texture textureFile) {
+    public Enemy(Viewport viewport, float maxSpeed, float width, float height, float xspawn, float yspawn, int HP, int damageStat, Texture textureFile, ArrayList<Projectiles> bulletArray) {
         // Call the superclass constructor.
         super(viewport, maxSpeed, width, height, xspawn, yspawn, HP, damageStat, textureFile);
         System.out.println("Enemy constructor called");
@@ -47,6 +50,7 @@ public class Enemy extends Character {
         this.attackRange = 2f;
         this.attackCooldown = 3f;
         this.currentCooldown = 0f;
+        gunShot = bulletArray;
 
         // Initialize the enemy idle animation.
         initIdleAnimation();
@@ -167,13 +171,13 @@ public class Enemy extends Character {
         CharacterHitbox.x = CharacterSprite.getX();
         CharacterHitbox.y = CharacterSprite.getY();
 
-       /* for (int i = gunShot.size() - 1; i >= 0; i--) {
+        for (int i = gunShot.size() - 1; i >= 0; i--) {
             if (gunShot.get(i).entityOverlap(this.CharacterHitbox)){
                 gunShot.get(i).shouldRemove = true;
                 this.HitPoints -= 10;
                 System.out.println(this.HitPoints);
             }
-        }*/
+        }
     }
 
     public void attack(PC player) {
