@@ -17,7 +17,6 @@ import io.github.javagame.temp.WorldLogic;
 import io.github.javagame.temp.utils.TransitionScreen;
 
 public class MainMenu extends Menu {
-    /*
     private Game game;
     private SpriteBatch batch;
 
@@ -33,29 +32,28 @@ public class MainMenu extends Menu {
         this.batch = batch;
         rootTable.clear();
 
-        // Load the texture atlas from your packed folder.
-        // Use a path relative to the assets folder (no leading slash).
+        // Load the texture atlas from your assets folder.
         bgAtlas = new TextureAtlas(Gdx.files.internal("packedBG/mainBG.atlas"));
 
-        // Build an array of frames using the region names exactly as in your atlas.
+        // Build an array of frames from the atlas.
         Array<AtlasRegion> frames = new Array<>();
         frames.add(bgAtlas.findRegion("bgMain0_delay-0.17s"));
-        frames.add(bgAtlas.findRegion("bgMain6_delay-0.17s"));
-        // If you have more unique frames, add them in the order you desire.
-        // For example:
-        // frames.add(bgAtlas.findRegion("bgMain1_delay-0.17s"));
-        // frames.add(bgAtlas.findRegion("bgMain2_delay-0.17s"));
-        // ... etc.
+        frames.add(bgAtlas.findRegion("bgMain1_delay-0.17s"));
+        frames.add(bgAtlas.findRegion("bgMain2_delay-0.17s"));
+        frames.add(bgAtlas.findRegion("bgMain3_delay-0.17s"));
+        frames.add(bgAtlas.findRegion("bgMain4_delay-0.17s"));
+        frames.add(bgAtlas.findRegion("bgMain5_delay-0.17s"));
+        // (Additional frames could be added here if available.)
 
-        // Create a looping animation with a frame duration (adjust as desired).
-        bgAnimation = new Animation<>(0.1f, frames, Animation.PlayMode.LOOP);
+        // Create a looping animation with a frame duration of 0.1 seconds.
+        bgAnimation = new Animation<>(0.15f, frames, Animation.PlayMode.LOOP);
         bgStateTime = 0f;
 
         // Create and style the title label.
         Label titleLabel = new Label("TRASH GAME", skin);
-        titleLabel.setFontScale(3f); // Larger font for bold appearance
+        titleLabel.setFontScale(5f);
         titleLabel.setColor(1, 1, 1, 1);
-        rootTable.add(titleLabel).padBottom(50);
+        rootTable.add(titleLabel).padBottom(350);
         rootTable.row();
 
         // Create the buttons.
@@ -63,22 +61,24 @@ public class MainMenu extends Menu {
         TextButton settingsButton = new TextButton("Settings", skin);
         TextButton exitGameButton = new TextButton("Exit Game", skin);
 
-        // Listener for Start Game: switch screens using a transition.
+        // Listener for Start Game: transition to the gameplay screen.
         startGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                // TransitionScreen will fade for 1 second then switch to WorldLogic.
-               // game.setScreen(new TransitionScreen(game, (Screen) new WorldLogic(game, batch), 1f, batch));
+                // Replace the commented line below with your transition if desired:
+                // game.setScreen(new TransitionScreen(game, new WorldLogic(game, batch), 1f, batch));
+                // For now, directly set the gameplay screen:
+                game.setScreen(new WorldLogic(game, batch));
             }
         });
 
+        // Listeners for Settings and Exit can be implemented similarly.
         settingsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                game.setScreen(new SettingsMenu(game));
+                // For now, do nothing or set a Settings screen.
             }
         });
-
         exitGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
@@ -99,16 +99,16 @@ public class MainMenu extends Menu {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Update the animation state.
+        // Update the background animation.
         bgStateTime += delta;
         TextureRegion currentFrame = bgAnimation.getKeyFrame(bgStateTime, true);
 
-        // Draw the background animation covering the entire screen.
+        // Draw the animated background (covering the entire screen).
         batch.begin();
         batch.draw(currentFrame, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();
 
-        // Draw the UI on top.
+        // Draw the UI.
         stage.act(delta);
         stage.draw();
     }
@@ -118,5 +118,4 @@ public class MainMenu extends Menu {
         super.dispose();
         bgAtlas.dispose();
     }
-    */
 }

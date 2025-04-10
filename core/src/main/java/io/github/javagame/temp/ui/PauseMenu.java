@@ -1,6 +1,7 @@
 package io.github.javagame.temp.ui;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -8,8 +9,7 @@ import io.github.javagame.temp.WorldLogic;
 import io.github.javagame.temp.Main;
 
 public class PauseMenu extends Menu {
-    /*
-     private Game game;
+    private Game game;
     private WorldLogic world;
 
     public PauseMenu(Game game, WorldLogic world) {
@@ -25,7 +25,7 @@ public class PauseMenu extends Menu {
         rootTable.row();
 
         TextButton resumeButton = new TextButton("Resume", skin);
-        resumeButton.addListener(new ChangeListener() {
+        resumeButton.addListener(new ChangeListener(){
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
                 game.setScreen(world);
@@ -35,7 +35,7 @@ public class PauseMenu extends Menu {
         rootTable.row();
 
         TextButton exitButton = new TextButton("Exit to Main Menu", skin);
-        exitButton.addListener(new ChangeListener() {
+        exitButton.addListener(new ChangeListener(){
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
                 game.setScreen(new MainMenu(game, ((Main)game).getBatch()));
@@ -43,6 +43,4 @@ public class PauseMenu extends Menu {
         });
         rootTable.add(exitButton).width(200).pad(10);
     }
-
-     */
 }

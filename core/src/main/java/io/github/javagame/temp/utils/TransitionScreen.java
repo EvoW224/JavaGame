@@ -4,12 +4,12 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class TransitionScreen extends ScreenAdapter {
-   /* private Game game;
+    private Game game;
     private com.badlogic.gdx.Screen targetScreen;
     private float transitionTime;
     private float elapsed;
@@ -57,6 +57,4 @@ public class TransitionScreen extends ScreenAdapter {
     public void dispose() {
         whitePixel.dispose();
     }
-
-    */
 }

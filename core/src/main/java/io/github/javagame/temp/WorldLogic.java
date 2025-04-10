@@ -10,12 +10,19 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import java.util.ArrayList;
 import com.badlogic.gdx.Game;
+import io.github.javagame.temp.bg.Background;
+import io.github.javagame.temp.tile.FloorTile;
 
 public class WorldLogic extends ScreenAdapter {
-    // The viewport defining the game world.
+    // The viewport that defines the game world.
     public FitViewport viewportWorld;
     float worldWidth;
     float worldHeight;
+
+    // Background for the game.
+    private Background background;
+    // Floor tile layer to cover the ground.
+    private FloorTile floorLayer;
 
     // Core game entities.
     public PC player;
@@ -29,16 +36,24 @@ public class WorldLogic extends ScreenAdapter {
     // Shared SpriteBatch provided from Main.
     private SpriteBatch spriteBatch;
 
-    // A reference to the Game object (for screen switching, if needed).
+    // Reference to the Game instance (used for screen switching).
     private Game game;
 
     public WorldLogic(Game game, SpriteBatch batch) {
         this.game = game;
         this.spriteBatch = batch;
+
+        // Create the background using "watching.png".
+        background = new Background("watching.png");
+
+        // Create the floor tile layer; for testing, we choose "tile1.png".
+        // Here, each tile is defined to be 3 units wide and 1 unit high in the world.
+        floorLayer = new FloorTile("tile1.png", 3f, 1f, .7f);
+
         createWorld();
         viewportWorld.apply();
 
-        // Load textures for entities.
+        // Load textures for the entities.
         try {
             textureFilePC = new Texture(Gdx.files.internal("libgdx.png"));
             System.out.println("PC Texture loaded successfully.");
@@ -52,14 +67,14 @@ public class WorldLogic extends ScreenAdapter {
             System.out.println("Error loading Enemy texture: " + e.getMessage());
         }
 
-        // Create gameplay entities.
-        player = new PC(viewportWorld, 18.0f, 2f, 3f, 1, 1, 100, 15, textureFilePC);
-        enemy = new Enemy(viewportWorld, 4.0f, 2f, 2f, 15, 1, 30, 25, textureFileGB);
+        // Create game entities.
+        player = new PC(viewportWorld, 18.0f, 4f, 6f, 1, 1, 100, 15, textureFilePC);
+        enemy = new Enemy(viewportWorld, 4.0f, 4f, 6f, 15, 1, 30, 25, textureFileGB);
         projectiles = new ArrayList<>();
     }
 
     public void createWorld() {
-        // Create a FitViewport with a fixed world size (e.g., 30 x 20).
+        // Create a FitViewport with a fixed world size (30 x 20).
         viewportWorld = new FitViewport(30, 20);
         worldWidth = viewportWorld.getWorldWidth();
         worldHeight = viewportWorld.getWorldHeight();
@@ -67,17 +82,17 @@ public class WorldLogic extends ScreenAdapter {
 
     // Update the game simulation.
     public void update(float delta) {
-        // Update the camera.
         viewportWorld.getCamera().update();
-        // Update the player (pass in the projectile list for shooting).
+
+        // Update game entities.
         player.update(delta, projectiles);
-        // Update the enemy (provide bounds and a reference to the player).
         enemy.update(delta, 15f, 25f, player);
-        // Update all projectiles.
+
+        // Update projectiles.
         for (int i = projectiles.size() - 1; i >= 0; i--) {
             projectiles.get(i).update(delta);
         }
-        // Remove projectiles that are flagged for removal.
+        // Remove projectiles flagged for removal.
         for (int i = projectiles.size() - 1; i >= 0; i--) {
             if (projectiles.get(i).shouldRemove) {
                 projectiles.remove(i);
@@ -87,25 +102,24 @@ public class WorldLogic extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
-        // (Optional) Handle in-game pause input; for debugging, we'll ignore pause.
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            // For now, you could print a message or later transition to a pause menu.
-            System.out.println("Pause requested (not handled in this test mode).");
+            game.setScreen(new io.github.javagame.temp.ui.PauseMenu(game, this));
+            System.out.println("Pause input detected.");
+            return;
         }
 
-        // Update simulation.
         update(delta);
-
-        // Clear the screen.
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         spriteBatch.setProjectionMatrix(viewportWorld.getCamera().combined);
 
+        // Render the background.
+        background.render(spriteBatch, viewportWorld);
+        // Render the floor tiles.
+
         spriteBatch.begin();
-        // Draw the player.
+        floorLayer.render(spriteBatch, viewportWorld);
         player.CharacterSprite.draw(spriteBatch);
-        // Draw the enemy.
         enemy.CharacterSprite.draw(spriteBatch);
-        // Draw each projectile.
         for (Projectiles shot : projectiles) {
             shot.CharacterSprite.draw(spriteBatch);
         }
@@ -121,5 +135,7 @@ public class WorldLogic extends ScreenAdapter {
     public void dispose() {
         if (textureFilePC != null) textureFilePC.dispose();
         if (textureFileGB != null) textureFileGB.dispose();
+        background.dispose();
+       // floorLayer.dispose();
     }
 }

@@ -1,7 +1,11 @@
 package io.github.javagame.temp;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Enemy extends Character {
@@ -14,46 +18,103 @@ public class Enemy extends Character {
     private float attackRange;
     private float attackCooldown;
     private float currentCooldown;
-    boolean goingRight = false;
+    // This flag indicates the enemy's current movement direction.
+    // If true, the enemy should face right; if false, the enemy should face left.
+    private boolean goingRight = true;
+
+    // Animation fields for the enemy's idle state.
+    private Animation<TextureRegion> idleAnimation;
+    private float idleStateTime;
+    // Constants for the idle sprite sheet.
+    // Adjust these according to your "GoomBot_Ground.png" asset.
+    private static final int ENEMY_FRAME_COLS = 30;
+    private static final int ENEMY_FRAME_ROWS = 1;
 
     public Enemy(Viewport viewport, float maxSpeed, float width, float height, float xspawn, float yspawn, int HP, int damageStat, Texture textureFile) {
+        // Call the superclass constructor.
         super(viewport, maxSpeed, width, height, xspawn, yspawn, HP, damageStat, textureFile);
         System.out.println("Enemy constructor called");
-        System.out.println("Texture file: " + (textureFile != null));
-        System.out.println("CharacterSprite: " + (CharacterSprite != null));
+        System.out.println("Texture file passed in: " + (textureFile != null));
+        System.out.println("CharacterSprite exists: " + (CharacterSprite != null));
 
-        this.patrolSpeed = maxSpeed * 0.5f;  // Enemy moves at half the max speed during patrol
-        this.patrolDistance = 5f;  // Distance to patrol in each direction
+        // Initialize movement properties.
+        this.patrolSpeed = maxSpeed * 0.5f;
+        this.patrolDistance = 5f;
         this.startX = xspawn;
         this.movingRight = true;
-        this.detectionRange = 10f;  // Range at which enemy can detect player
+        this.detectionRange = 10f;
         this.isChasing = false;
-        this.attackRange = 2f;  // Range at which enemy can attack
-        this.attackCooldown = 3f;  // Time between attacks
+        this.attackRange = 2f;
+        this.attackCooldown = 3f;
         this.currentCooldown = 0f;
 
+        // Initialize the enemy idle animation.
+        initIdleAnimation();
 
-        // Set initial sprite position
-        /*if (CharacterSprite != null) {
-            CharacterSprite.setPosition(xspawn, yspawn);
-            System.out.println("Enemy sprite position set to: " + xspawn + ", " + yspawn);
-        }*/
+        // Set the origin of the sprite to its center for proper flipping.
+        CharacterSprite.setOriginCenter();
     }
 
-    public void update(float deltaTime, float leftbound, float rightbound,PC Target) {
+    private void initIdleAnimation() {
+        // Load the idle sprite sheet.
+        Texture idleSheet = new Texture(Gdx.files.internal("GoomBot_Ground.png"));
+        // Split the texture into regions.
+        TextureRegion[][] tmp = TextureRegion.split(idleSheet,
+                idleSheet.getWidth() / ENEMY_FRAME_COLS,
+                idleSheet.getHeight() / ENEMY_FRAME_ROWS);
+        // Flatten the 2D array into a 1D array.
+        TextureRegion[] idleFrames = new TextureRegion[ENEMY_FRAME_COLS * ENEMY_FRAME_ROWS];
+        int index = 0;
+        for (int i = 0; i < ENEMY_FRAME_ROWS; i++) {
+            for (int j = 0; j < ENEMY_FRAME_COLS; j++) {
+                idleFrames[index++] = tmp[i][j];
+            }
+        }
+        Array<TextureRegion> frameArray = new Array<>(idleFrames);
+        // Create a looping animation.
+        idleAnimation = new Animation<>(0.05f, frameArray, Animation.PlayMode.LOOP);
+        idleStateTime = 0f;
+        // Set the initial frame.
+        CharacterSprite.setRegion(frameArray.get(0));
+        // Optionally dispose the idleSheet if no longer needed:
+        // idleSheet.dispose();
+    }
 
+    /**
+     * Updates the enemy’s behavior and animation.
+     * @param deltaTime The time elapsed since the last frame.
+     * @param leftbound The left boundary for patrol.
+     * @param rightbound The right boundary for patrol.
+     * @param Target The player character.
+     */
+    public void update(float deltaTime, float leftbound, float rightbound, PC Target) {
+        // Update idle animation timer and set current frame.
+        idleStateTime += deltaTime;
+        TextureRegion currentFrame = idleAnimation.getKeyFrame(idleStateTime, true);
+        CharacterSprite.setRegion(currentFrame);
+
+        // Clamp the enemy's sprite position within the viewport bounds.
         CharacterSprite.setX(MathUtils.clamp(CharacterSprite.getX(), 0, viewport.getWorldWidth() - CharacterSprite.getWidth()));
         CharacterSprite.setY(MathUtils.clamp(CharacterSprite.getY(), 0, viewport.getWorldHeight() - CharacterSprite.getHeight()));
+
+        // Update attack cooldown.
         if (currentCooldown > 0) {
             currentCooldown -= deltaTime;
         }
 
-        if ((Math.abs(Target.CharacterSprite.getX() - this.CharacterSprite.getX()) < detectionRange) && (Target.CharacterSprite.getY() - this.CharacterSprite.getY() < 1f) ) {
-            if (Target.CharacterSprite.getX() > this.CharacterSprite.getX()) {this.CharacterSprite.translateX(maxSpeed * deltaTime);}
-            else {this.CharacterSprite.translateX(-maxSpeed * deltaTime);}
+        // Chase logic: move toward the player and set goingRight accordingly.
+        if ((Math.abs(Target.CharacterSprite.getX() - this.CharacterSprite.getX()) < detectionRange)
+                && (Target.CharacterSprite.getY() - this.CharacterSprite.getY() < 1f)) {
+            if (Target.CharacterSprite.getX() > this.CharacterSprite.getX()) {
+                this.CharacterSprite.translateX(maxSpeed * deltaTime);
+                goingRight = true;
+            } else {
+                this.CharacterSprite.translateX(-maxSpeed * deltaTime);
+                goingRight = false;
+            }
             this.attack(Target);
-        }
-        else {
+        } else {
+            // Patrol logic.
             if (this.CharacterSprite.getX() > rightbound) {
                 goingRight = false;
             }
@@ -67,16 +128,24 @@ public class Enemy extends Character {
             }
         }
 
-        // Update hitbox position
+        // --- Invert the flip logic compared to PC ---
+        // For enemy, if goingRight is true, force the sprite to be flipped (face right) by ensuring isFlipX() returns true.
+        if (goingRight) {
+            if (!CharacterSprite.isFlipX()) {
+                CharacterSprite.flip(true, false);
+            }
+        }
+        // If goingRight is false, ensure the sprite is not flipped.
+        else {
+            if (CharacterSprite.isFlipX()) {
+                CharacterSprite.flip(true, false);
+            }
+        }
+
+        // Update the hitbox.
         CharacterHitbox.x = CharacterSprite.getX();
         CharacterHitbox.y = CharacterSprite.getY();
-
-        //this.position.set(CharacterSprite.getX(), CharacterSprite.getY());
-
-        // Debug position
-       // System.out.println("Enemy position: " + CharacterSprite.getX() + ", " + CharacterSprite.getY());
     }
-
 
     public void attack(PC player) {
         System.out.printf("Current Cooldown: %f\n", currentCooldown);
@@ -86,70 +155,18 @@ public class Enemy extends Character {
                 player.takeDamage(DamageStat);
                 currentCooldown += attackCooldown;
                 System.out.printf("Player took %d damage, %d HP left\n", DamageStat, player.HitPoints);
-                if (this.CharacterSprite.getX() > player.CharacterSprite.getX()) {player.recoil(false);}
-                else {player.recoil(true);}
+                if (this.CharacterSprite.getX() > player.CharacterSprite.getX()) {
+                    player.recoil(false);
+                } else {
+                    player.recoil(true);
+                }
             }
         }
     }
 
-    // Getters for enemy-specific properties
+    // Getters for enemy-specific properties.
     public float getPatrolSpeed() { return patrolSpeed; }
     public float getDetectionRange() { return detectionRange; }
     public float getAttackRange() { return attackRange; }
     public boolean isChasing() { return isChasing; }
 }
-
-/* if (CharacterSprite == null) {
-            System.out.println("Warning: Enemy sprite is null!");
-            return;
-        }
-
-        // Update attack cooldown
-        if (currentCooldown > 0) {
-            currentCooldown -= deltaTime;
-        }
-
-        // Clamp enemy position to screen bounds
-        CharacterSprite.setX(MathUtils.clamp(CharacterSprite.getX(), 0, viewport.getWorldWidth() - CharacterSprite.getWidth()));
-        CharacterSprite.setY(MathUtils.clamp(CharacterSprite.getY(), 0, viewport.getWorldHeight() - CharacterSprite.getHeight()));
-
-        // Check if player is in detection range
-        float distanceToPlayer = Math.abs(player.getXPosition() - this.getXPosition());
-        isChasing = distanceToPlayer <= detectionRange;
-
-        if (isChasing) {
-            // Chase behavior with bounds checking
-            float targetX = player.getXPosition();
-            float currentX = this.getXPosition();
-
-            // Only move if we're not too close to the screen edges
-            if (targetX > currentX && currentX < viewport.getWorldWidth() - CharacterSprite.getWidth()) {
-                speed = maxSpeed;
-            } else if (targetX < currentX && currentX > 0) {
-                speed = -maxSpeed;
-            } else {
-                speed = 0; // Stop if we're at the screen edge
-            }
-        } else {
-            // Patrol behavior with bounds checking
-            float currentX = this.getXPosition();
-
-            if (movingRight) {
-                if (currentX < startX + patrolDistance && currentX < viewport.getWorldWidth() - CharacterSprite.getWidth()) {
-                    speed = patrolSpeed;
-                } else {
-                    movingRight = false;
-                    speed = -patrolSpeed;
-                }
-            } else {
-                if (currentX > startX - patrolDistance && currentX > 0) {
-                    speed = -patrolSpeed;
-                } else {
-                    movingRight = true;
-                    speed = patrolSpeed;
-                }
-            }
-        }
-
-        // Apply movement
-        CharacterSprite.translateX(speed * deltaTime);*/

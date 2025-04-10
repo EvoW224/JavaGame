@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 public class SettingsMenu extends Menu {
-    /*
+
     private Game game;
     private int currentVolume = 5; // Stub volume level
 
@@ -67,5 +67,5 @@ public class SettingsMenu extends Menu {
         rootTable.add(backButton).width(150).padTop(20);
     }
 
-     */
+
 }

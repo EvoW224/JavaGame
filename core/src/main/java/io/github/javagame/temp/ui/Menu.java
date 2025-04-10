@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public abstract class Menu extends ScreenAdapter {
-    /*
+
     protected Stage stage;
     protected Skin skin;
     protected Table rootTable;
@@ -54,5 +54,5 @@ public abstract class Menu extends ScreenAdapter {
         stage.dispose();
         skin.dispose();
     }
-    */
+
 }
