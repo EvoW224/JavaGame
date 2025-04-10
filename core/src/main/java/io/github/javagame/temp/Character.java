@@ -96,7 +96,7 @@ public class Character {
     }
 
     public boolean isDead() {
-        return (HitPoints < 0);
+        return (HitPoints <= 0);
     }
 
     /*public void drawCharacter(float worldWidth, float worldHeight) {
