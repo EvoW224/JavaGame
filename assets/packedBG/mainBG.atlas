@@ -1,0 +1,86 @@
+
+mainBG.png
+size: 2048, 2048
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+bgMain0_delay-0.17s
+  rotate: false
+  xy: 2, 2
+  size: 1800, 1200
+  orig: 1800, 1200
+  offset: 0, 0
+  index: -1
+bgMain6_delay-0.17s
+  rotate: false
+  xy: 2, 2
+  size: 1800, 1200
+  orig: 1800, 1200
+  offset: 0, 0
+  index: -1
+
+mainBG2.png
+size: 2048, 2048
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+bgMain1_delay-0.17s
+  rotate: false
+  xy: 2, 2
+  size: 1800, 1200
+  orig: 1800, 1200
+  offset: 0, 0
+  index: -1
+bgMain5_delay-0.17s
+  rotate: false
+  xy: 2, 2
+  size: 1800, 1200
+  orig: 1800, 1200
+  offset: 0, 0
+  index: -1
+
+mainBG3.png
+size: 2048, 2048
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+bgMain2_delay-0.17s
+  rotate: false
+  xy: 2, 2
+  size: 1800, 1200
+  orig: 1800, 1200
+  offset: 0, 0
+  index: -1
+bgMain4_delay-0.17s
+  rotate: false
+  xy: 2, 2
+  size: 1800, 1200
+  orig: 1800, 1200
+  offset: 0, 0
+  index: -1
+
+mainBG4.png
+size: 2048, 2048
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+bgMain3_delay-0.17s
+  rotate: false
+  xy: 2, 2
+  size: 1800, 1200
+  orig: 1800, 1200
+  offset: 0, 0
+  index: -1
+
+mainBG5.png
+size: 2048, 2048
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+bgMain7_delay-0.17s
+  rotate: false
+  xy: 2, 2
+  size: 1800, 1200
+  orig: 1800, 1200
+  offset: 0, 0
+  index: -1
