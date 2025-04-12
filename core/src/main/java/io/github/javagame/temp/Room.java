@@ -24,69 +24,71 @@ public class Room {
     public void setTiles() {
         for (int i = 0; i < 150; ++i) {
             Tiles tile;
+
+
+
             if (i <= 14) {
-                tile = new Tiles((i%15) * 2,(i / 15) ,lowWallTexture, true, true);
+                tile = new Tiles((i%15) * 2,(i / 15) * 2 ,lowWallTexture, true, true);
             }
             else if (i <= 19) {
-                    tile = new Tiles(i % 15, (i / 15) , emptynessOfTheVoid, false, true);
+                    tile = new Tiles((i % 15) * 2, (i / 15) * 2 , emptynessOfTheVoid, false, true);
             }
             else if (i <= 44) {
-                tile = new Tiles(i%15,(i / 15) ,emptynessOfTheVoid, false, true);
+                tile = new Tiles((i % 15) * 2,(i / 15) * 2 ,emptynessOfTheVoid, false, true);
             }
             else if (i <= 59) {
-                tile = new Tiles(i%15,(i / 15) ,emptynessOfTheVoid, false, true);
+                tile = new Tiles((i % 15) * 2,(i / 15) * 2 ,emptynessOfTheVoid, false, true);
             }
             else if (i <= 74) {
-                tile = new Tiles(i%15,(i / 15) ,emptynessOfTheVoid, false, true);
+                tile = new Tiles((i % 15) * 2,(i / 15) * 2 ,emptynessOfTheVoid, false, true);
             }
             else if (i <= 89) {
-                tile = new Tiles(i%15,(i / 15) ,emptynessOfTheVoid, false, true);
+                tile = new Tiles((i % 15) * 2,(i / 15) * 2 ,emptynessOfTheVoid, false, true);
             }
             else if (i <= 104) {
-                tile = new Tiles(i%15,(i / 15) ,emptynessOfTheVoid, false, true);
+                tile = new Tiles((i % 15) * 2,(i / 15) * 2 ,emptynessOfTheVoid, false, true);
             }
             else if (i <= 119) {
-                tile = new Tiles(i%15,(i / 15) ,emptynessOfTheVoid, false, true);
+                tile = new Tiles((i % 15) * 2,(i / 15) * 2 ,emptynessOfTheVoid, false, true);
             }
             else if (i <= 134) {
-                tile = new Tiles(i%15,(i / 15) ,emptynessOfTheVoid, false, true);
+                tile = new Tiles((i % 15) * 2,(i / 15) * 2 ,emptynessOfTheVoid, false, true);
             }
             else if (i <= 149) {
-                tile = new Tiles(i%15,(i / 15) ,topWallTexture, true, true);
+                tile = new Tiles((i % 15) * 2,(i / 15) * 2 ,topWallTexture, true, true);
             }
             else {
                 tile = null;
             }
 
-            if (i%15 == 0) {
-                if (i/15 == 0) { //tile = new Tiles(i%15,(i / 15) * 2,bottomLeftTexture, false, true);
-                tile.texture = bottomLeftTexture;
-                tile.hasCollision = true;
+            if (i % 15 == 0) {
+                if (i/15 == 0) { tile = new Tiles((i % 15) * 2,(i / 15) * 2, bottomLeftTexture, false, true);
+                   /* tile.texture = bottomLeftTexture;
+                    tile.hasCollision = true;*/
                 }
-                else if (i / 15 == 9) {//tile = new Tiles(i%15,(i / 15) * 2, topLeftTexture, false, true);
-                    tile.texture = topLeftTexture;
-                    tile.hasCollision = true;
+                else if (i / 15 == 9) {tile = new Tiles((i % 15) * 2,(i / 15) * 2, topLeftTexture, false, true);
+                    /*tile.texture = topLeftTexture;
+                    tile.hasCollision = true;*/
                 }
-                else { //tile = new Tiles(i%15,(i / 15) * 2,wallLeftTexture, false, true);
-                    tile.texture = wallLeftTexture;
-                    tile.hasCollision = true;
+                else { tile = new Tiles((i % 15) * 2,(i / 15) * 2,wallLeftTexture, false, true);
+                   /* tile.texture = wallLeftTexture;
+                    tile.hasCollision = true;*/
                 }
             }
             if (i % 15 == 14) {
-                if (i/15 == 0) { //tile = new Tiles(i%15,(i / 15) * 2,bottomRightTexture, false, true);
-                    tile.texture = bottomRightTexture;
-                    tile.hasCollision = true;
+                if (i/15 == 0) { tile = new Tiles((i % 15) * 2,(i / 15) * 2,bottomRightTexture, false, true);
+                   /* tile.texture = bottomRightTexture;
+                    tile.hasCollision = true;*/
                 }
-                else if (i / 15 == 9) {//tile = new Tiles(i%15,(i / 15) * 2, topRightTexture, false, true);
-                    tile.texture = topRightTexture;
-                    tile.hasCollision = true;
+                else if (i / 15 == 9) {tile = new Tiles((i % 15) * 2,(i / 15) * 2, topRightTexture, false, true);
+                    /*tile.texture = topRightTexture;
+                    tile.hasCollision = true;*/
                 }
-                else {// tile = new Tiles(i%15,(i / 15) * 2,wallRightTexture, false, true);
-                    tile.texture = wallRightTexture;
-                    tile.hasCollision = true;
+                else {tile = new Tiles((i % 15) * 2,(i / 15) * 2,wallRightTexture, false, true);
+                   /* tile.texture = wallRightTexture;
+                    tile.hasCollision = true;*/
                 }
             }
-
 
             CurrentRoom.add(tile);
 

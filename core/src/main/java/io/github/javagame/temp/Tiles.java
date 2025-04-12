@@ -15,6 +15,8 @@ public class Tiles {
 
     public Tiles (float xcoords, float ycoords, Texture texture, Boolean isPlatform, Boolean hasCollision) {
         this.TileSprite = new Sprite(texture);
+        this.TileSprite.setSize(width,height);
+        this.TileSprite.setPosition(xcoords, ycoords);
         this.isPlatform = isPlatform;
         this.hasCollision = hasCollision;
     }
