@@ -39,6 +39,8 @@ public class WorldLogic extends ScreenAdapter {
     // Reference to the Game instance (used for screen switching).
     private Game game;
 
+    Room room1;
+
     public WorldLogic(Game game, SpriteBatch batch) {
         this.game = game;
         this.spriteBatch = batch;
@@ -66,6 +68,7 @@ public class WorldLogic extends ScreenAdapter {
         } catch (Exception e) {
             System.out.println("Error loading Enemy texture: " + e.getMessage());
         }
+        //Room Textures
 
         // Create game entities.
         player = new PC(viewportWorld, 18.0f, 4f, 6f, 1, 1, 100, 15, textureFilePC);
@@ -79,6 +82,9 @@ public class WorldLogic extends ScreenAdapter {
         viewportWorld = new FitViewport(30, 20);
         worldWidth = viewportWorld.getWorldWidth();
         worldHeight = viewportWorld.getWorldHeight();
+        room1 = new Room(viewportWorld);
+        room1.setTiles();
+
     }
 
     // Update the game simulation.
@@ -126,6 +132,11 @@ public class WorldLogic extends ScreenAdapter {
         // Render the floor tiles.
 
         spriteBatch.begin();
+        for (int i = 0; i < 150; ++i) {
+            if(room1.CurrentRoom.get(i) != null) {
+                room1.CurrentRoom.get(i).TileSprite.draw(spriteBatch);
+            }
+        }
         floorLayer.render(spriteBatch, viewportWorld);
         if (player != null) {player.CharacterSprite.draw(spriteBatch);}
         if (enemy != null) {enemy.CharacterSprite.draw(spriteBatch);}
