@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Game;
 import io.github.javagame.temp.bg.Background;
 import io.github.javagame.temp.tile.FloorTile;
+import io.github.javagame.temp.tile.WallTile;
 import io.github.javagame.temp.ui.PauseMenu;
 
 public class WorldLogic extends ScreenAdapter {
@@ -24,6 +25,7 @@ public class WorldLogic extends ScreenAdapter {
     private Background background;
     // Floor tile layer to cover the ground.
     private FloorTile floorLayer;
+    private WallTile wallLayer;
 
     // Core game entities.
     public PC player;
@@ -48,10 +50,14 @@ public class WorldLogic extends ScreenAdapter {
 
         // Create the background using "watching.png".
         background = new Background("watching.png");
+        wallLayer = new WallTile("wLeft.png", 1f, 1f, 10f);
+
 
         // Create the floor tile layer; for testing, we choose "tile1.png".
         // Each tile will be 3 units wide and 1 unit high and drawn with an offset of 0.7f.
-        floorLayer = new FloorTile("tile1.png", 3f, 1f, 0.7f);
+        floorLayer = new FloorTile("tile1.png", 3f, 2f, 0.7f);
+
+        // PUT HERE WALL TILES
 
         createWorld();
         viewportWorld.apply();
@@ -140,6 +146,7 @@ public class WorldLogic extends ScreenAdapter {
         // Render the floor tiles.
         spriteBatch.begin();
         floorLayer.render(spriteBatch, viewportWorld);
+      //  wallLayer.render(spriteBatch, viewportWorld);
         // Draw the player, enemy, and rotor.
         if (player != null) { player.CharacterSprite.draw(spriteBatch); }
         if (enemy != null) { enemy.CharacterSprite.draw(spriteBatch); }
