@@ -20,8 +20,6 @@ public class Enemy extends Character {
     private float attackRange;
     private float attackCooldown;
     private float currentCooldown;
-    // This flag indicates the enemy's current movement direction.
-    // If true, the enemy should face right; if false, the enemy should face left.
     private boolean goingRight = true;
     ArrayList<Projectiles> gunShot;
 
@@ -29,7 +27,6 @@ public class Enemy extends Character {
     private Animation<TextureRegion> idleAnimation;
     private float idleStateTime;
     // Constants for the idle sprite sheet.
-    // Adjust these according to your "GoomBot_Ground.png" asset.
     private static final int ENEMY_FRAME_COLS = 30;
     private static final int ENEMY_FRAME_ROWS = 1;
 
@@ -51,6 +48,7 @@ public class Enemy extends Character {
         this.attackCooldown = 3f;
         this.currentCooldown = 0f;
         gunShot = bulletArray;
+
 
         // Initialize the enemy idle animation.
         initIdleAnimation();
@@ -120,7 +118,7 @@ public class Enemy extends Character {
                 } else {
                     CharacterSprite.translateX(-maxSpeed * deltaTime);
                 }
-                attack(Target);
+                this.attack(Target);
             } else {  // Patrol logic
                 if (CharacterSprite.getX() > rightbound) {
                     goingRight = false;
@@ -183,14 +181,15 @@ public class Enemy extends Character {
 
         // Process collisions with projectiles.
         for (int i = gunShot.size() - 1; i >= 0; i--) {
-            if (gunShot.get(i).entityOverlap(CharacterHitbox)) {
+            /*if (gunShot.get(i).CharacterHitbox.overlaps(this.CharacterHitbox)) {*/ if ((((gunShot.get(i).CharacterSprite.getX() < this.CharacterSprite.getX())&&(gunShot.get(i).CharacterSprite.getX()+ gunShot.get(i).CharacterSprite.getWidth() > this.CharacterSprite.getX()))||((gunShot.get(i).CharacterSprite.getX() > this.CharacterSprite.getX())&&(gunShot.get(i).CharacterSprite.getX() < this.CharacterSprite.getX() + this.CharacterSprite.getWidth()))) && ((gunShot.get(i).CharacterSprite.getY() > this.CharacterSprite.getY())&&(gunShot.get(i).CharacterSprite.getY() + gunShot.get(i).CharacterSprite.getHeight() < this.CharacterSprite.getY() + this.CharacterSprite.getHeight()))) {
                 gunShot.get(i).shouldRemove = true;
                 gunShot.get(i).HitPoints = 0;
-                HitPoints -= 10;
-                System.out.println(HitPoints);
+                this.HitPoints -= 10;
+                System.out.println(this.HitPoints);
             }
         }
     }
+
 
     public void attack(PC player) {
         if (player != null) {
