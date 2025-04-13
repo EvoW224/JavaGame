@@ -3,7 +3,6 @@ package io.github.javagame.temp;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -12,6 +11,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Game;
 import io.github.javagame.temp.bg.Background;
 import io.github.javagame.temp.tile.FloorTile;
+import io.github.javagame.temp.tile.Room;
 
 public class WorldLogic extends ScreenAdapter {
     // The viewport that defines the game world.

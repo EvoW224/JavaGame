@@ -1,17 +1,18 @@
-package io.github.javagame.temp;
+package io.github.javagame.temp.tile;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import io.github.javagame.temp.PC;
 
 public class Tiles {
-    float xcoords;
-    float ycoords;
-    float width = 2f;
-    float height = 2f;
-    Texture texture;
-    Sprite TileSprite;
-    Boolean hasCollision;
-    Boolean isPlatform;
+    public float xcoords;
+    public float ycoords;
+    public float width = 2f;
+    public float height = 2f;
+    public Texture texture;
+    public Sprite TileSprite;
+    public Boolean hasCollision;
+    public Boolean isPlatform;
 
     public Tiles (float xcoords, float ycoords, Texture texture, Boolean isPlatform, Boolean hasCollision) {
         this.TileSprite = new Sprite(texture);
