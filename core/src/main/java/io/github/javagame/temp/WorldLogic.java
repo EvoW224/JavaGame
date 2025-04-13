@@ -28,10 +28,13 @@ public class WorldLogic extends ScreenAdapter {
     public PC player;
     public Enemy enemy;
     public ArrayList<Projectiles> projectiles;
+    public Rotor rotor; // New rotor enemy
 
     // Textures for entities.
     private Texture textureFilePC;
     private Texture textureFileGB;
+    private Texture textureRotor;
+
 
     // Shared SpriteBatch provided from Main.
     private SpriteBatch spriteBatch;
@@ -68,12 +71,21 @@ public class WorldLogic extends ScreenAdapter {
         } catch (Exception e) {
             System.out.println("Error loading Enemy texture: " + e.getMessage());
         }
+        try {
+            textureRotor = new Texture(Gdx.files.internal("GoomBot_Flying.png"));
+            System.out.println("Rotor Texture loaded successfully.");
+        } catch (Exception e) {
+            System.out.println("Error loading Rotor texture: " + e.getMessage());
+        }
         //Room Textures
 
+
         // Create game entities.
+
         player = new PC(viewportWorld, 18.0f, 4f, 6f, 1, 1, 100, 15, textureFilePC);
         projectiles = new ArrayList<>();
         enemy = new Enemy(viewportWorld, 4.0f, 4f, 6f, 15, 1, 30, 25, textureFileGB, projectiles);
+        rotor = new Rotor(viewportWorld, 4.0f, 4f, 6f, 15, 10, 30, 25, textureRotor, projectiles);
 
     }
 
@@ -94,6 +106,7 @@ public class WorldLogic extends ScreenAdapter {
         // Update game entities.
         if (player != null) { player.update(delta, projectiles); }
         if (enemy != null) {enemy.update(delta, 15f, 25f, player); }
+        if (rotor != null) {rotor.update(delta, 15f, 25f, player); }
 
         // Update projectiles.
         for (int i = projectiles.size() - 1; i >= 0; i--) {
@@ -120,6 +133,8 @@ public class WorldLogic extends ScreenAdapter {
         }
         if (player != null) { if (player.isDead()) { player  = null;} }
         if (enemy != null) { if (enemy.isDead()) { enemy = null; } }
+        if (rotor != null) { if (rotor.isDead()) { rotor = null; } }
+
         /*if (Apache != null) { if (Apache.isDead()) { Apache = null; } }
         if (Handy != null) {if (Handy.isDead()) { Handy = null; }}*/
 
@@ -140,6 +155,7 @@ public class WorldLogic extends ScreenAdapter {
         floorLayer.render(spriteBatch, viewportWorld);
         if (player != null) {player.CharacterSprite.draw(spriteBatch);}
         if (enemy != null) {enemy.CharacterSprite.draw(spriteBatch);}
+        if (rotor != null) {rotor.CharacterSprite.draw(spriteBatch);}
         for (Projectiles shot : projectiles) {
             shot.CharacterSprite.draw(spriteBatch);
         }
@@ -155,6 +171,7 @@ public class WorldLogic extends ScreenAdapter {
     public void dispose() {
         if (textureFilePC != null) textureFilePC.dispose();
         if (textureFileGB != null) textureFileGB.dispose();
+        if (textureRotor != null) textureRotor.dispose();
         background.dispose();
        // floorLayer.dispose();
     }
