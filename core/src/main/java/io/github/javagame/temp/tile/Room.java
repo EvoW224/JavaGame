@@ -1,4 +1,4 @@
-package io.github.javagame.temp;
+package io.github.javagame.temp.tile;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.ArrayList;
 
 public class Room {
-    ArrayList<Tiles> CurrentRoom = new ArrayList<>(150);
+    public ArrayList<Tiles> CurrentRoom = new ArrayList<>(150);
     Viewport FoR;
     Texture wallRightTexture = new Texture("rightWall.png");
     Texture wallLeftTexture = new Texture("leftWall.png");
