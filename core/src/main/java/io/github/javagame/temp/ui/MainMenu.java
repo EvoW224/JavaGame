@@ -2,6 +2,8 @@ package io.github.javagame.temp.ui;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -18,6 +20,8 @@ import io.github.javagame.temp.utils.TransitionScreen;
 public class MainMenu extends Menu {
     private Game game;
     private SpriteBatch batch;
+    private Music bgm;
+
 
     // Fields for the background animation.
     private TextureAtlas bgAtlas;
@@ -30,6 +34,9 @@ public class MainMenu extends Menu {
         this.game = game;
         this.batch = batch;
         rootTable.clear();
+
+        // Load music files!!
+        bgm = Gdx.audio.newMusic(Gdx.files.internal("before.mp3"));
 
         // Load the texture atlas from your packed folder.
         bgAtlas = new TextureAtlas(Gdx.files.internal("packedBG/mainBG.atlas"));
@@ -91,6 +98,19 @@ public class MainMenu extends Menu {
 
     @Override
     public void render(float delta) {
+
+
+        // Music settings, for now! Stuff like volume, looping, pausing, etc.
+        bgm.setVolume(0.5f);
+        bgm.setLooping(true);
+        bgm.play();
+         /* other methods to maybe use
+            bgm.stop();
+            bgm.pause();
+            set booleans like bgm.isPlaying() and bgm.isLooping();
+            bgm.getPosition() to find where we are in the song in seconds
+         */
+
         // Clear the screen.
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -111,5 +131,6 @@ public class MainMenu extends Menu {
     public void dispose() {
         super.dispose();
         bgAtlas.dispose();
+        bgm.dispose();
     }
 }
