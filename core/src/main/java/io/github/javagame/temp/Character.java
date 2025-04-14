@@ -12,42 +12,42 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class    Character {
 
-    float deltaTime = Gdx.graphics.getDeltaTime();
+    public float deltaTime = Gdx.graphics.getDeltaTime();
 
     //Movement Related Variables
-    protected Vector2 position; // Position of character
-    protected Vector2 velocity; // Velocity (speed and direction)
-    protected Vector2 acceleration; // Acceleration due to movement/gravity
+    public Vector2 position; // Position of character
+    public Vector2 velocity; // Velocity (speed and direction)
+    public Vector2 acceleration; // Acceleration due to movement/gravity
 
-    protected boolean onGround;
-    protected boolean onAir;
-    protected boolean isJumping;
+    public boolean onGround;
+    public boolean onAir;
+    public boolean isJumping;
 
-    protected float maxSpeed;
-    protected float terminalVelocity = 24f;
-    protected float gravity = 3.0f; // Simulated gravity
-    protected float friction = 0; // Horizontal friction
-    protected float jumpStrength = 30f; // Base jump force
-    protected float speed = 0f;
-    protected float dvdt = 0.8f;
-    protected float jumpTimer = 0;
-    protected float yspeed;// Tracks how long the jump button is held
-    protected float maxJumpTime = 0f; // Maximum time jump can be held (1 second)
+    public float maxSpeed;
+    public float terminalVelocity = 24f;
+    public float gravity = 3.0f; // Simulated gravity
+    public float friction = 0; // Horizontal friction
+    public float jumpStrength = 30f; // Base jump force
+    public float speed = 0f;
+    public float dvdt = 0.8f;
+    public float jumpTimer = 0;
+    public float yspeed;// Tracks how long the jump button is held
+    public float maxJumpTime = 0f; // Maximum time jump can be held (1 second)
 
     //Local Viewport Variable
-    protected Viewport viewport; // For boundary handling
+    public Viewport viewport; // For boundary handling
 
     //HitBox
-    protected Rectangle CharacterHitbox;
+    public Rectangle CharacterHitbox;
 
     // Stats In-Game
-    protected int HitPoints;
-    protected int DamageStat;
+    public int HitPoints;
+    public int DamageStat;
 
     //Texture
-    protected Texture CharacterTexture;
+    public Texture CharacterTexture;
     public Sprite CharacterSprite;
-    protected SpriteBatch CharacterSpriteBatch;
+    public SpriteBatch CharacterSpriteBatch;
 
     //Getter Functions
     public float getXPosition() { return this.position.x;}

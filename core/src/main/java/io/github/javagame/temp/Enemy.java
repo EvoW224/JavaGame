@@ -20,8 +20,6 @@ public class Enemy extends Character {
     private float attackRange;
     private float attackCooldown;
     private float currentCooldown;
-    // This flag indicates the enemy's current movement direction.
-    // If true, the enemy should face right; if false, the enemy should face left.
     private boolean goingRight = true;
     ArrayList<Projectiles> gunShot;
 
@@ -29,7 +27,6 @@ public class Enemy extends Character {
     private Animation<TextureRegion> idleAnimation;
     private float idleStateTime;
     // Constants for the idle sprite sheet.
-    // Adjust these according to your "GoomBot_Ground.png" asset.
     private static final int ENEMY_FRAME_COLS = 30;
     private static final int ENEMY_FRAME_ROWS = 1;
 
@@ -52,8 +49,11 @@ public class Enemy extends Character {
         this.currentCooldown = 0f;
         gunShot = bulletArray;
 
+
         // Initialize the enemy idle animation.
         initIdleAnimation();
+
+
 
         // Set the origin of the sprite to its center for proper flipping.
         CharacterSprite.setOriginCenter();
@@ -92,86 +92,96 @@ public class Enemy extends Character {
      * @param Target The player character.
      */
     public void update(float deltaTime, float leftbound, float rightbound, PC Target) {
+        // Save the current X position before moving.
+        float prevX = CharacterSprite.getX();
+
         // Update idle animation timer and set current frame.
         idleStateTime += deltaTime;
         TextureRegion currentFrame = idleAnimation.getKeyFrame(idleStateTime, true);
         CharacterSprite.setRegion(currentFrame);
 
         // Clamp the enemy's sprite position within the viewport bounds.
-        this.CharacterSprite.setX(MathUtils.clamp(this.CharacterSprite.getX(), 0, viewport.getWorldWidth() - this.CharacterSprite.getWidth()));
-        this.CharacterSprite.setY(MathUtils.clamp(this.CharacterSprite.getY(), 0, viewport.getWorldHeight() - this.CharacterSprite.getHeight()));
+        CharacterSprite.setX(MathUtils.clamp(CharacterSprite.getX(), 0, viewport.getWorldWidth() - CharacterSprite.getWidth()));
+        CharacterSprite.setY(MathUtils.clamp(CharacterSprite.getY(), 0, viewport.getWorldHeight() - CharacterSprite.getHeight()));
 
         // Update attack cooldown.
         if (currentCooldown > 0) {
             currentCooldown -= deltaTime;
         }
 
-        // Chase logic: move toward the player and set goingRight accordingly.
+        // Chase logic: if the target is close enough, move toward it.
         if (Target != null) {
-            if ((Math.abs(Target.CharacterSprite.getX() - this.CharacterSprite.getX()) < detectionRange) && (Math.abs(Target.CharacterSprite.getY() - this.CharacterSprite.getY()) < 1f)) {
-                if (Target.CharacterSprite.getX() > this.CharacterSprite.getX()) {
-                    this.CharacterSprite.translateX(maxSpeed * deltaTime);
+            if ((Math.abs(Target.CharacterSprite.getX() - CharacterSprite.getX()) < detectionRange) &&
+                (Math.abs(Target.CharacterSprite.getY() - CharacterSprite.getY()) < 1f)) {
+                if (Target.CharacterSprite.getX() > CharacterSprite.getX()) {
+                    CharacterSprite.translateX(maxSpeed * deltaTime);
                 } else {
-                    this.CharacterSprite.translateX(-maxSpeed * deltaTime);
+                    CharacterSprite.translateX(-maxSpeed * deltaTime);
                 }
                 this.attack(Target);
-            }
-            //Patrol logic
-            else {
-                if (this.CharacterSprite.getX() > rightbound) {
+            } else {  // Patrol logic
+                if (CharacterSprite.getX() > rightbound) {
                     goingRight = false;
                 }
-                if (this.CharacterSprite.getX() < leftbound) {
+                if (CharacterSprite.getX() < leftbound) {
                     goingRight = true;
                 }
                 if (goingRight) {
-                    this.CharacterSprite.translateX(patrolSpeed * deltaTime);
+                    CharacterSprite.translateX(patrolSpeed * deltaTime);
                 } else {
-                    this.CharacterSprite.translateX(-patrolSpeed * deltaTime);
+                    CharacterSprite.translateX(-patrolSpeed * deltaTime);
                 }
-
-
             }
         }
 
-        //Gravity logic
-        if (CharacterSprite.getY() > 1f) {onAir = true;}
-        if (Math.abs(this.yspeed) > this.terminalVelocity) {
-            this.yspeed = this.terminalVelocity * Math.signum(this.yspeed);
+        // Gravity logic.
+        if (CharacterSprite.getY() > 1f) { onAir = true; }
+        if (Math.abs(yspeed) > terminalVelocity) {
+            yspeed = terminalVelocity * Math.signum(yspeed);
         }
-
-        // Ground collision check - moved before jump check
         if (CharacterSprite.getY() <= 1f) {
             CharacterSprite.setY(1f);
-            this.yspeed = 0f;
-            this.onAir = false;
-            this.onGround = true;
-            this.jumpTimer = 0f;
+            yspeed = 0f;
+            onAir = false;
+            onGround = true;
+            jumpTimer = 0f;
         }
         if (onAir) {
-            this.yspeed -= this.gravity;
+            yspeed -= gravity;
         }
         CharacterSprite.translateY(yspeed * deltaTime);
 
-        // --- Invert the flip logic compared to PC ---
-        // For enemy, if goingRight is true, force the sprite to be flipped (face right) by ensuring isFlipX() returns true.
-        if (goingRight) {
+        // New Flip logic based on delta X
+
+        float newX = CharacterSprite.getX();
+
+        if (newX > prevX) {
+            // Moving right.
+            goingRight = true;
+        } else if (newX < prevX) {
+            // Moving left.
+            goingRight = false;
+        }
+        // Set origin first for proper flipping.
+        CharacterSprite.setOriginCenter();
+        // Assuming the default (unflipped) sprite faces right.
+        if (!goingRight) {
+            if (CharacterSprite.isFlipX()) {
+                CharacterSprite.flip(false, false);
+            }
+        } else {
             if (!CharacterSprite.isFlipX()) {
                 CharacterSprite.flip(true, false);
             }
         }
-        // If goingRight is false, ensure the sprite is not flipped.
-        else {
-            if (CharacterSprite.isFlipX()) {
-                CharacterSprite.flip(true, false);
-            }
-        }
 
+        // Update hitbox position.
         CharacterHitbox.x = CharacterSprite.getX();
         CharacterHitbox.y = CharacterSprite.getY();
 
+        // Process collisions with projectiles.
         for (int i = gunShot.size() - 1; i >= 0; i--) {
-            if (gunShot.get(i).entityOverlap(this.CharacterHitbox)){
+            /*if (gunShot.get(i).CharacterHitbox.overlaps(this.CharacterHitbox)) {*/ if ((((gunShot.get(i).CharacterSprite.getX() < this.CharacterSprite.getX())&&(gunShot.get(i).CharacterSprite.getX()+ gunShot.get(i).CharacterSprite.getWidth() > this.CharacterSprite.getX()))||((gunShot.get(i).CharacterSprite.getX() > this.CharacterSprite.getX())&&(gunShot.get(i).CharacterSprite.getX() < this.CharacterSprite.getX() + this.CharacterSprite.getWidth()))) && ((gunShot.get(i).CharacterSprite.getY() > this.CharacterSprite.getY())&&(gunShot.get(i).CharacterSprite.getY() + gunShot.get(i).CharacterSprite.getHeight() < this.CharacterSprite.getY() + this.CharacterSprite.getHeight()))) {
                 gunShot.get(i).shouldRemove = true;
                 gunShot.get(i).HitPoints = 0;
                 this.HitPoints -= 10;
@@ -180,16 +190,16 @@ public class Enemy extends Character {
         }
     }
 
+
     public void attack(PC player) {
         if (player != null) {
-            //System.out.printf("Current Cooldown: %f\n", currentCooldown);
             if (currentCooldown <= 0) {
-                float distanceToPlayer = Math.abs(player.CharacterSprite.getX() - this.CharacterSprite.getX());
+                float distanceToPlayer = Math.abs(player.CharacterSprite.getX() - CharacterSprite.getX());
                 if (distanceToPlayer <= attackRange) {
                     player.takeDamage(DamageStat);
                     currentCooldown += attackCooldown;
                     System.out.printf("Player took %d damage, %d HP left\n", DamageStat, player.HitPoints);
-                    if (this.CharacterSprite.getX() > player.CharacterSprite.getX()) {
+                    if (CharacterSprite.getX() > player.CharacterSprite.getX()) {
                         player.recoil(false);
                     } else {
                         player.recoil(true);

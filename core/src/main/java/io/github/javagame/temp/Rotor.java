@@ -187,14 +187,13 @@ public class Rotor extends Character {
 
     public void attack(PC player) {
         if (player != null) {
-            System.out.printf("Rotor attack cooldown: %f\n", currentCooldown);
+            //System.out.printf("Current Cooldown: %f\n", currentCooldown);
             if (currentCooldown <= 0) {
                 float distanceToPlayer = Math.abs(player.CharacterSprite.getX() - this.CharacterSprite.getX());
-                float yDistance = Math.abs(player.CharacterSprite.getY() + player.CharacterSprite.getHeight() - this.CharacterSprite.getY());
-                if (distanceToPlayer <= attackRange && yDistance <= attackRange) {
+                if (distanceToPlayer <= attackRange) {
                     player.takeDamage(DamageStat);
                     currentCooldown += attackCooldown;
-                    System.out.printf("Player took %d damage, %d HP left (Rotor attack)\n", DamageStat, player.HitPoints);
+                    System.out.printf("Player took %d damage, %d HP left\n", DamageStat, player.HitPoints);
                     if (this.CharacterSprite.getX() > player.CharacterSprite.getX()) {
                         player.recoil(false);
                     } else {
