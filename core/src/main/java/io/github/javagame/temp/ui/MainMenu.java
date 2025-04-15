@@ -19,8 +19,8 @@ import io.github.javagame.temp.utils.TransitionScreen;
 
 public class MainMenu extends Menu {
     private Game game;
-    private SpriteBatch batch;
-    private Music bgm;
+    private final SpriteBatch batch;
+    private final Music bgm;
 
 
     // Fields for the background animation.
@@ -79,7 +79,7 @@ public class MainMenu extends Menu {
         settingsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                // TODO: Set to a Settings screen.
+                game.setScreen(new SettingsMenu(game));
             }
         });
         exitGameButton.addListener(new ChangeListener() {
