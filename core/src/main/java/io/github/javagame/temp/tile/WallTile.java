@@ -14,13 +14,13 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  *
  * Future enhancements might add support for multiple tile types or more sophisticated tiling.
  */
-public class FloorTile {
-
+public class WallTile {
     private Texture tileTexture;
-
     private float tileWidth;   // width in world units
     private float tileHeight;  // base visual tile height in world units (collision height)
-    private float yOffset;     // extra height to add above the collision (if positive)
+    private float xOffset;
+    float xCoords;
+    float yCoords;// extra height to add above the collision (if positive)
 
     /**
      * Constructs a FloorTile.
@@ -28,17 +28,18 @@ public class FloorTile {
      * @param texturePath Path to the tile image (e.g., "tile1.png" or "tile2.png").
      * @param tileWidth   The width in world units for each tile.
      * @param tileHeight  The base height (collision height) in world units for the tile’s graphic.
-     * @param yOffset     The extra height to add on top of tileHeight. For example, if the
+     * @param xOffset     The extra height to add on top of tileHeight. For example, if the
      *                    collision is at y = 0 but you want the tile to visually extend upward,
      *                    set yOffset to a positive value (e.g., 0.7f). (If yOffset is negative,
      *                    this version does nothing special.)
      */
-    public FloorTile(String texturePath, float tileWidth, float tileHeight, float yOffset) {
+    public WallTile(String texturePath, float tileWidth, float tileHeight, float xOffset) {
         // Load the tile texture.
         tileTexture = new Texture(Gdx.files.internal(texturePath));
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
-        this.yOffset = yOffset;
+        this.xOffset = xOffset;
+
     }
 
     /**
@@ -50,20 +51,16 @@ public class FloorTile {
      * @param viewport The game's viewport defining the visible world.
      */
     public void render(SpriteBatch batch, Viewport viewport) {
-        float worldWidth = viewport.getWorldWidth();
-
+        float worldHeight = viewport.getWorldHeight();
         // Always draw the tile starting at y = 0.
         float drawY = 0f;
-
         // If yOffset is positive, add it to the tile's height.
-        float drawHeight = tileHeight + (yOffset > 0 ? yOffset : 0f);
-
+        float drawHeight = tileHeight + (xOffset > 0 ? xOffset : 0f);
 
         // Loop across the visible world width.
-        for (float x = 0; x < worldWidth; x += tileWidth) {
-            batch.draw(tileTexture, x, drawY, tileWidth, drawHeight);
+        for (float y = 0; y < worldHeight; y += tileHeight) {
+            batch.draw(tileTexture, y, drawY, tileWidth, drawHeight);
         }
-
     }
 
     public void dispose() {

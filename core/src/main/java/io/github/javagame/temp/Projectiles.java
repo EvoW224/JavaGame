@@ -22,6 +22,7 @@ public class Projectiles extends Character {
 
     public void update(float deltaTime) {
         this.CharacterSprite.translateX(speed * deltaTime * direction);
+        System.out.println("Bullet position x: " + this.CharacterHitbox.x);
 
         // Update hitbox and position
         CharacterHitbox.x = this.CharacterSprite.getX();

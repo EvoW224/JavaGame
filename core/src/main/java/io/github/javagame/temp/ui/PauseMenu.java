@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import io.github.javagame.temp.WorldLogic;
 import io.github.javagame.temp.Main;
+import io.github.javagame.temp.utils.TransitionScreen;
 
 public class PauseMenu extends Menu {
     private Game game;
@@ -38,7 +39,8 @@ public class PauseMenu extends Menu {
         exitButton.addListener(new ChangeListener(){
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                game.setScreen(new MainMenu(game, ((Main)game).getBatch()));
+                // Create a new MainMenu instance and use a transition screen to fade in.
+                game.setScreen(new TransitionScreen(game, new MainMenu(game, ((Main) game).getBatch()), 1f, ((Main) game).getBatch()));
             }
         });
         rootTable.add(exitButton).width(200).pad(10);
