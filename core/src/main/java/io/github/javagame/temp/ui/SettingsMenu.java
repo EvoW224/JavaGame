@@ -60,7 +60,6 @@ public class SettingsMenu extends Menu {
         backButton.addListener(new ChangeListener(){
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                // Pass the batch from Main when transitioning back.
               //  game.setScreen(new MainMenu(game, ((Main)game).getBatch()));
             }
         });

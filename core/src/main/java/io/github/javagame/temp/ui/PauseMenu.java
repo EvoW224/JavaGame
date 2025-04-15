@@ -41,6 +41,7 @@ public class PauseMenu extends Menu {
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
                 // Create a new MainMenu instance and use a transition screen to fade in.
                 game.setScreen(new TransitionScreen(game, new MainMenu(game, ((Main) game).getBatch()), 1f, ((Main) game).getBatch()));
+
             }
         });
         rootTable.add(exitButton).width(200).pad(10);

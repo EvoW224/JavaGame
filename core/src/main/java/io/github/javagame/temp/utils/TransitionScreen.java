@@ -45,11 +45,13 @@ public class TransitionScreen extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
+
         // Draw the white overlay with alpha increasing from 0 to 1.
         batch.setColor(1, 1, 1, alpha);
         batch.draw(whitePixel, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();
         batch.setColor(1, 1, 1, 1); // Reset color to default
+
 
         // When the transition time has elapsed, switch to the target screen.
         if (elapsed >= transitionTime) {
