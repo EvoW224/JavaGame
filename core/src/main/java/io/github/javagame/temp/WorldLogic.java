@@ -9,6 +9,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import java.util.ArrayList;
 import com.badlogic.gdx.Game;
+import io.github.javagame.temp.Enemies.Enemy;
+import io.github.javagame.temp.Enemies.Rotor;
 import io.github.javagame.temp.bg.Background;
 import io.github.javagame.temp.tile.FloorTile;
 import io.github.javagame.temp.tile.Room;
@@ -83,8 +85,8 @@ public class WorldLogic extends ScreenAdapter {
         // Create game entities.
         player = new PC(viewportWorld, 18.0f, 4f, 6f, 1, 1, 100, 15, textureFilePC);
         projectiles = new ArrayList<>();
-        enemy = new Enemy(viewportWorld, 4.0f, 4f, 6f, 15, 1, 30, 25, textureFileGB, projectiles);
-        rotor = new Rotor(viewportWorld, 4.0f, 4f, 6f, 15, 30, 30, 25, textureFileFB, projectiles);
+        enemy = new Enemy(viewportWorld, 4.0f, 4f, 6f, 15, 1, 30, 25, textureFileGB, projectiles, true);
+        rotor = new Rotor(viewportWorld, 4.0f, 4f, 6f, 15, 30, 30, 25, textureFileFB, projectiles, false);
 
     }
 

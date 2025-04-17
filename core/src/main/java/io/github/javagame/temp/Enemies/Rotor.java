@@ -1,4 +1,4 @@
-package io.github.javagame.temp;
+package io.github.javagame.temp.Enemies;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -7,24 +7,15 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import io.github.javagame.temp.Character;
+import io.github.javagame.temp.PC;
+import io.github.javagame.temp.Projectiles;
 
 import java.util.ArrayList;
 
-public class Rotor extends Character {
-    private float patrolSpeed;
-    private float patrolDistance;
-    private float startX;
-    private boolean movingRight;
-    private float detectionRange;
-    private boolean isChasing;
-    private float attackRange;
-    private float attackCooldown;
-    private float currentCooldown;
-    // This flag indicates the rotor's current movement direction.
-    // If true, the rotor moves to the right; if false, to the left.
-    private boolean goingRight = true;
-    ArrayList<Projectiles> gunShot;
+public class Rotor extends Villain {
     private boolean PlayerFound;
+    private float verticalRange;
 
     // --- New animation fields for the flying animation ---
     private Animation<TextureRegion> flyAnimation;
@@ -33,9 +24,9 @@ public class Rotor extends Character {
     private static final int FLY_FRAME_COLS = 30; // For example, 20 frames across
     private static final int FLY_FRAME_ROWS = 1;    // 1 row
 
-    public Rotor(Viewport viewport, float maxSpeed, float width, float height, float xspawn, float yspawn, int HP, int damageStat, Texture textureFile, ArrayList<Projectiles> bulletArray) {
+    public Rotor(Viewport viewport, float maxSpeed, float width, float height, float xspawn, float yspawn, int HP, int damageStat, Texture textureFile, ArrayList<Projectiles> bulletArray, boolean gravity) {
         // Call the superclass constructor.
-        super(viewport, maxSpeed, width, height, xspawn, yspawn, HP, damageStat, textureFile);
+        super(viewport, maxSpeed, width, height, xspawn, yspawn, HP, damageStat, textureFile, bulletArray, gravity);
         System.out.println("Rotor constructor called");
         System.out.println("Texture file: " + (textureFile != null));
         System.out.println("CharacterSprite exists: " + (CharacterSprite != null));
@@ -52,6 +43,7 @@ public class Rotor extends Character {
         this.currentCooldown = 0f;
         this.gunShot = bulletArray;
         this.PlayerFound = false;
+        this.verticalRange = 0.2f;
 
         // Initialize the rotor's flying animation.
         initFlyAnimation();
@@ -105,14 +97,7 @@ public class Rotor extends Character {
         TextureRegion currentFrame = flyAnimation.getKeyFrame(flyStateTime, true);
         CharacterSprite.setRegion(currentFrame);
 
-        // Clamp the rotor's sprite position within the viewport bounds.
-        CharacterSprite.setX(MathUtils.clamp(CharacterSprite.getX(), 0, viewport.getWorldWidth() - CharacterSprite.getWidth()));
-        CharacterSprite.setY(MathUtils.clamp(CharacterSprite.getY(), 0, viewport.getWorldHeight() - CharacterSprite.getHeight()));
-
-        // Update attack cooldown.
-        if (currentCooldown > 0) {
-            currentCooldown -= deltaTime;
-        }
+        super.update();
 
         // Detection and chase logic.
         if (Target != null) {
@@ -130,16 +115,20 @@ public class Rotor extends Character {
                     goingRight = false;
                 }
                 // Vertical movement: simple logic to approach player's vertical position.
-                if (Math.abs(Target.CharacterSprite.getY() + Target.CharacterSprite.getHeight() - this.CharacterSprite.getY()) <= 1f) {
+                if (Math.abs(Target.CharacterSprite.getY() + Target.CharacterSprite.getHeight() - this.CharacterSprite.getY()) <= 0.2f) {
                     this.CharacterSprite.translateY(0f);
-                    yspeed = 0f;
+                    this.yspeed = 0f;
                 } else if (Target.onAir && (Target.CharacterSprite.getY() > this.CharacterSprite.getY())
                     || Target.onGround && (Target.CharacterSprite.getY() + Target.CharacterSprite.getHeight() > this.CharacterSprite.getY())) {
+                    this.yspeed = 1f;
                     this.CharacterSprite.translateY(maxSpeed * deltaTime);
                 } else {
+                    this.yspeed = 1f;
                     this.CharacterSprite.translateY(-maxSpeed * deltaTime);
                 }
-                this.attack(Target);
+                if (Math.abs(this.CharacterSprite.getY() - (Target.CharacterSprite.getY() + Target.CharacterSprite.getHeight())) < verticalRange || Math.abs((this.CharacterSprite.getY() + this.CharacterSprite.getHeight()) - Target.CharacterSprite.getY()) < verticalRange ) {
+                    this.attack(Target);
+                }
             } else {
                 // If the player has not been found, patrol.
                 if (this.CharacterSprite.getX() > rightbound) {
@@ -153,19 +142,6 @@ public class Rotor extends Character {
                 } else {
                     this.CharacterSprite.translateX(-patrolSpeed * deltaTime);
                 }
-            }
-        }
-
-        // Update hitbox position.
-        CharacterHitbox.x = CharacterSprite.getX();
-        CharacterHitbox.y = CharacterSprite.getY();
-
-        // Process collisions with projectiles in the gunShot list.
-        for (int i = gunShot.size() - 1; i >= 0; i--) {
-            if (gunShot.get(i).entityOverlap(this.CharacterHitbox)) {
-                gunShot.get(i).shouldRemove = true;
-                this.HitPoints -= 10;
-                System.out.println("Rotor HP: " + this.HitPoints);
             }
         }
 
@@ -185,24 +161,7 @@ public class Rotor extends Character {
         }
     }
 
-    public void attack(PC player) {
-        if (player != null) {
-            //System.out.printf("Current Cooldown: %f\n", currentCooldown);
-            if (currentCooldown <= 0) {
-                float distanceToPlayer = Math.abs(player.CharacterSprite.getX() - this.CharacterSprite.getX());
-                if (distanceToPlayer <= attackRange) {
-                    player.takeDamage(DamageStat);
-                    currentCooldown += attackCooldown;
-                    System.out.printf("Player took %d damage, %d HP left\n", DamageStat, player.HitPoints);
-                    if (this.CharacterSprite.getX() > player.CharacterSprite.getX()) {
-                        player.recoil(false);
-                    } else {
-                        player.recoil(true);
-                    }
-                }
-            }
-        }
-    }
+
 
     // Getters for rotor-specific properties.
     public float getPatrolSpeed() { return patrolSpeed; }
